@@ -1,0 +1,383 @@
+<div class="matero-row"   fxFlexAlign="start" fxLayout="row wrap">
+  <!-- <div class="matero-col" fxFlex.gt-sm="100" fxFlex="100">
+ 
+        <mat-toolbar [ngClass]="['text-white', 'bg-indigo-500']">
+         
+          <div class="f-s-14 f-w-400">Machine : DMG Mori - CLX TC Turning</div>
+          <div class="matero-col" fxFlex.gt-sm="6" fxFlex="100"></div>
+          <div class="f-s-14 f-w-400">Product : Shaft 5" [SHF4334DMT] </div>
+          <div class="matero-col" fxFlex.gt-sm="6" fxFlex="100"></div>
+          <div class="f-s-14 f-w-400">Operator : Pylant, Zach </div>
+          <div class="matero-col" fxFlex.gt-sm="6" fxFlex="100"></div>
+          <div class="f-s-14 f-w-400">Shift : II </div>
+          <div class="matero-col" fxFlex.gt-sm="6" fxFlex="100"></div>
+          <div class="f-s-14 f-w-400">Batch : OMB78123 </div>
+          </mat-toolbar>
+
+  </div> -->
+  <div class="matero-col" fxFlex.gt-sm="100" fxFlex="100">
+    <!-- <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="15px"> -->
+    <!-- <mat-card [ngClass]="['text-black', 'bg-gray-200']" > -->
+      <!-- <div class="matero-row" fxLayout="row wrap"> -->
+        <div class="matero-col" fxFlex.gt-sm="40" fxFlex="100">
+       
+          <mat-card  style="height: 60px;" [ngClass]="['text-black', 'bg-gray-100']">
+            <mat-card-header>
+              <i mat-card-avatar class="material-icons" >settings</i>
+              
+               <mat-card-title   class="f-s-14 f-w-400">Machine</mat-card-title>
+               <mat-card-subtitle class="f-s-14 f-w-600" >DMG Mori- CLX TC</mat-card-subtitle>
+                
+          </mat-card-header> 
+           </mat-card>
+        </div>
+      <!-- </div> -->
+     
+      <div class="matero-col" fxFlex.gt-sm="40" fxFlex="100">
+        <mat-card  style="height: 60px;" [ngClass]="['text-black', 'bg-gray-100']">
+          <mat-card-header>
+            <i mat-card-avatar class="material-icons" >person</i>
+            
+             <mat-card-title class="f-s-14 f-w-400">Shift - I</mat-card-title>
+             <mat-card-subtitle class="f-s-14 f-w-600" >Operator Name</mat-card-subtitle>
+              
+        </mat-card-header> 
+         </mat-card>
+      </div>
+     
+      <div class="matero-col" fxFlex.gt-sm="40" fxFlex="100">
+        <mat-card style="height: 60px;"  [ngClass]="['text-black', 'bg-gray-100']">
+          <mat-card-header>
+            <i mat-card-avatar class="material-icons" >group_work</i>
+            
+             <mat-card-title class="f-s-14 f-w-400">Batch Number</mat-card-title>
+             <mat-card-subtitle class="f-s-14 f-w-600" >WO73623</mat-card-subtitle>
+              
+        </mat-card-header> 
+         </mat-card>
+      </div>
+     
+   
+        <div class="matero-col" fxFlex.gt-sm="40" fxFlex="100">
+       
+          <mat-card style="height: 60px;"  [ngClass]="['text-black', 'bg-gray-100']">
+            <mat-card-header>
+              <i mat-card-avatar class="material-icons" >view_in_ar</i>
+              
+               <mat-card-title class="f-s-14 f-w-400">Product</mat-card-title>
+               <mat-card-subtitle class="f-s-14 f-w-600" >Flexure Bearing</mat-card-subtitle>
+                
+          </mat-card-header> 
+           </mat-card>
+        </div>
+    
+      <div class="matero-col" fxFlex.gt-sm="40" fxFlex="100">
+        <mat-card style="height: 60px;"  [ngClass]="['text-black', 'bg-gray-100']">
+          <mat-card-header>
+            <i mat-card-avatar class="material-icons" >power_settings_new</i>
+            
+             <mat-card-title class="f-s-14 f-w-400">Machine Status</mat-card-title>
+             <mat-card-subtitle class="f-s-14 f-w-600" >Running</mat-card-subtitle>
+              
+        </mat-card-header> 
+         </mat-card>
+      </div>
+    <!-- </mat-card> -->
+    
+    </div>
+
+
+
+
+</div> 
+<div class="matero-row" fxLayout="row wrap">
+<table style="padding-top: 0px;">
+  <tr style="padding-top: 0px;margin-top: 0px;">
+    <td style="width:600px;margin-top: 0px;padding-top: 0px;">
+      <table>
+        <tr>
+      <div class="matero-col" fxFlex.gt-sm="100" fxFlex="100">
+        <!-- <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="15px"> -->
+        <!-- <mat-card [ngClass]="['text-black', 'bg-gray-200']" > -->
+          <!-- <div class="matero-row" fxLayout="row wrap"> -->
+            <div class="matero-col" fxFlex.gt-sm="40" fxFlex="100">
+           
+              <mat-card  [ngClass]="['text-black', 'bg-white']">
+               <mat-card-title class="f-s-14 f-w-400">OEE</mat-card-title>
+          
+               <mat-card-content>
+                 <div class="f-s-18 f-w-600">35%</div>
+               </mat-card-content>
+             </mat-card>
+            </div>
+          <!-- </div> -->
+         
+          <div class="matero-col" fxFlex.gt-sm="40" fxFlex="100">
+            <mat-card  [ngClass]="['text-black', 'bg-white']" [ngClass]="['text-black', 'bg-white']">
+              <mat-card-title class="f-s-14 f-w-400">Availability</mat-card-title>
+              <mat-card-content>
+                <div class="f-s-18 f-w-600">50%</div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+         
+          <div class="matero-col" fxFlex.gt-sm="40" fxFlex="100">
+            <mat-card [ngClass]="['text-black', 'bg-white']" [ngClass]="['text-black', 'bg-white']">
+              <mat-card-title class="f-s-14 f-w-400">Quality</mat-card-title>
+              <mat-card-content>
+                <div class="f-s-18 f-w-600">80%</div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+         
+          <div class="matero-col" fxFlex.gt-sm="40" fxFlex="100">
+            <mat-card [ngClass]="['text-black', 'bg-white']" [ngClass]="['text-black', 'bg-white']">
+              <mat-card-title class="f-s-14 f-w-400">Performance</mat-card-title>
+              <mat-card-content>
+                <div class="f-s-18 f-w-600">78%</div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        <!-- </mat-card> -->
+        
+        </div>
+      </tr>
+      <tr>
+        <td style="width:600px;margin-top: 0px;padding-top: 0px;">
+          <div class="matero-col" fxFlex.gt-sm="30" fxFlex="100">
+            <mat-card [ngClass]="['text-black', 'bg-white']">
+              <mat-card-title  class="f-s-14 f-w-500">Production</mat-card-title>
+              <hr>
+              <mat-card-content>
+                  <div class="f-s-14 f-w-400"> Target&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 500</div>
+                  <div>&nbsp;</div>
+                  <div class="f-s-14 f-w-400"> Actual&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 47</div>
+                  <hr>
+                  <button class="f-s-14 f-w-600" mat-raised-button >453</button>
+                  
+               </mat-card-content>
+             
+           </mat-card>
+         </div>
+    
+         <div class="matero-col" fxFlex.gt-sm="35" fxFlex="100">
+           <mat-card [ngClass]="['text-black', 'bg-white']">
+             <mat-card-title  class="f-s-14 f-w-500">Efficiency</mat-card-title>
+             <hr>
+             <mat-card-content>
+               <div class="f-s-14 f-w-400"> Target&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 80%</div>
+               <div>&nbsp;</div>
+               <div class="f-s-14 f-w-400"> Actual&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 60%</div>
+               <hr>
+               <button class="f-s-14 f-w-600" mat-raised-button >20%</button>
+               
+            </mat-card-content>
+           </mat-card>
+         </div>
+    
+         <div class="matero-col" fxFlex.gt-sm="30" fxFlex="100">
+           <mat-card [ngClass]="['text-black', 'bg-white']">
+             <mat-card-title  class="f-s-14 f-w-500">Utilization</mat-card-title>
+             <hr>
+             <mat-card-content>
+               <div class="f-s-14 f-w-400"> Target&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 85%</div>
+               <div>&nbsp;</div>
+               <div class="f-s-14 f-w-400"> Actual&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 80%</div>
+               <hr>
+               <button class="f-s-14 f-w-600" mat-raised-button >10%</button>
+               
+            </mat-card-content>
+           </mat-card>
+         </div>
+    
+         <div class="matero-col" fxFlex.gt-sm="30" fxFlex="100">
+           <mat-card [ngClass]="['text-black', 'bg-white']">
+             <mat-card-title  class="f-s-14 f-w-500">Logistics </mat-card-title>
+             <hr>
+             <mat-card-content>
+               <div class="f-s-14 f-w-400"> Target&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 90%</div>
+               <div>&nbsp;</div>
+               <div class="f-s-14 f-w-400"> Actual&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 75%</div>
+               <hr>
+               <button class="f-s-14 f-w-600" mat-raised-button >25%</button>
+               
+            </mat-card-content>
+           </mat-card>
+         </div>
+        </td>
+      </tr>
+      </table>
+    </td>
+    <td style="width:900px;margin-top: 0px;padding-top: 0px;">
+      <table>
+        <tr style="margin-top: 0px;padding-top: 0px;">
+          <td>
+       <div class="matero-col" fxFlex.gt-sm="100" fxFlex="100"> 
+   
+        <mat-card [ngClass]="['text-black', 'bg-white']">
+          
+          <mat-card-content>
+            <div class="matero-col" fxFlex.gt-sm="100" fxFlex="100"> 
+            <style>
+             #grad1 {
+               height: 50px;
+               width: 200px;
+               background-color: rgba(255, 0, 0, 0.884); /* For browsers that do not support gradients */
+               /* background-image: linear-gradient(red, yellow); */
+             }
+             </style>  
+             <div id="grad1">DMG Mori</div>
+   
+             <style>
+               #grad2 {
+                 height: 100px;
+                 width: 200px;
+                 background-color: rgba(255, 0, 0, 0.349); /* For browsers that do not support gradients */
+                 /* background-image: linear-gradient(red, rgb(255, 166, 0)); */ */
+               }
+               </style>  
+               <div id="grad2"></div>
+   
+           </div>
+           <div class="matero-col" fxFlex.gt-sm="60" fxFlex="100"> 
+             <div id="maccharts1"></div>
+          </div>
+         
+         </mat-card-content>
+    
+         </mat-card> 
+        
+       </div> 
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  
+</table>
+</div>
+ 
+ 
+<div class="matero-row" fxLayout="row wrap">
+  <div class="matero-col" fxFlex.gt-sm="40" fxFlex="100">
+    
+  
+ </div>
+
+
+ 
+ <div class="matero-col" fxFlex.gt-sm="60" fxFlex="100">
+  <mat-card [ngClass]="['text-black', 'bg-gray-300']">
+    <mat-card [ngClass]="['text-black', 'bg-white']">
+      <mat-card-title  class="f-s-14 f-w-500">Alerts / Nofications </mat-card-title>
+      
+      <mat-card-content>
+        <div>
+        <mat-list role="list">
+          <mat-list-item role="listitem">Item 1</mat-list-item>
+          <mat-list-item role="listitem">Item 2</mat-list-item>
+        </mat-list>
+      </div>
+      <div >Notes </div>
+      <div>
+        <mat-list role="list">
+          <mat-list-item role="listitem">Item 1</mat-list-item>
+          <mat-list-item role="listitem">Item 2</mat-list-item>
+          <mat-list-item role="listitem">Item 3</mat-list-item>
+        </mat-list>
+      </div>
+      </mat-card-content>
+    </mat-card>
+     
+  </mat-card>
+</div>
+<div class="panel panel-default" style="margin: 10px;margin-bottom: 0px;
+          -webkit-box-shadow: 0px 6px 41px -4px rgba(138,138,138,1);
+  -moz-box-shadow: 0px 6px 41px -4px rgba(138,138,138,1);
+  box-shadow: 0px 6px 41px -4px rgba(138,138,138,1);">
+                        <div class="panel-heading"><b>Form Information</b></div>
+                        <mat-list role="list">
+                          <mat-list-item role="listitem">Item 1</mat-list-item>
+                          <mat-list-item role="listitem">Item 2</mat-list-item>
+                        </mat-list>
+                        </div>
+
+
+
+                        <div class="matero-col" fxFlex.gt-sm="25" fxFlex="100"> 
+                          <mat-card style="margin:2em;padding-top:0;padding-left:0;padding-right:0" class="example-card">
+                          
+                            <mat-card-title  fxLayoutAlign="center" style="background:#dbdfe2; padding:5px 5px;font-size: 14px;" >Line 10  </mat-card-title>
+                            <mat-card-subtitle>Batch Status</mat-card-subtitle>
+                            <mat-card-content style="padding:10px;">
+                              <table style="width:100%;margin:5px;">
+                               
+                                <tr style="vertical-align: top">
+                                  <td>
+                                     Current Job
+                                  </td>
+                                  <td>
+                                    34334334
+                                  </td>
+
+                                </tr>
+                                <tr style="vertical-align: top">
+                                  <td>
+                                     Target Production
+                                  </td>
+                                  <td>
+                                     410000
+                                  </td>
+                                </tr>
+                                <tr style="vertical-align: top">
+                                  <td>
+                                     Actual Production
+                                  </td>
+                                  <td>
+                                    367794
+                                  </td>
+                                </tr>
+                                <tr style="vertical-align: top">
+                                  <td>
+                                     Variance
+                                  </td>
+                                  <td>
+                                    42206
+                                  </td>
+                                </tr>
+                                <tr style="vertical-align: top">
+                                  <td>
+                                     Speed (Units Per Min)
+                                  </td>
+                                  <td>
+                                    75
+                                  </td>
+                                </tr>
+                                <tr style="vertical-align: top">
+                                  <td>
+                                     Minutes to C/O
+                                  </td>
+                                  <td>
+                                    566
+                                  </td>
+
+                                </tr>
+                                <tr style="vertical-align: top">
+                                  <td>
+                                     Estimated C/O Time
+                                  </td>
+                                  <td>
+                                    04/21/2021 11.24 PM
+                                  </td>
+                                  
+                                </tr>
+                                
+                                </table>
+                               
+                            </mat-card-content>
+                            <mat-card-actions>
+                              <button mat-button>LIKE</button>
+                              <button mat-button>SHARE</button>
+                            </mat-card-actions>
+                          </mat-card>
+                          </div>

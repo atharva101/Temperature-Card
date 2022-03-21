@@ -1,0 +1,272 @@
+/**======================================================================
+=========================================================================
+Template Name: Able Pro Angular 9+ Free Admin Template
+Author: Codedthemes
+File: style.css
+=========================================================================
+=========================================================================
+  == Table of Contents==
+	- Generic classes
+		-	Margin, Padding, Font class, text align, position, floating, overflow, background class, text color, display class, boarder class
+	- Theme Elements
+		-	Accordion, Button, tabs, typography, buttons, box shadow, Lable & Badges, Alert, Pagination, Breadcumb, Cards, Collapse,
+        -   Carousel, Grid, Progress, Model, tooltip, popover, Datepicker, Gridstack, lightbox, notification, Nestable, pnotify, rating,
+        -   Rangeslider, Slider, Syntax Highlighter, Tour, Treeview, Toolbar, Session Timeout, Session idle Timeout, offline, Animation
+    - Forms
+        -   Forms Elements, Advance Form Control, Validation, Masking, Wizard, Picker, Select
+	- Pages
+		-   authentication, Maintenance, Maps, Landing page messages, task, Todo, Notes, Charts, Icons, Gallery, Editors,
+        -   Invoice, Full Calender, File Upload,
+=================================================================================
+=================================================================================== */
+
+// Theme Font
+@import "themes/font/theme-font";
+
+// theme scrollbar
+@import "themes/plugin/perfect-scrollbar";
+
+// main framework
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "settings/custom-variables";
+@import "settings/theme-variables";
+
+// ng module
+//@import "ng-module/ng-module";
+
+// bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+// icon
+@import "themes/font/datta-icon";
+@import "themes/font/feather";
+@import "themes/font/fontawesome";
+
+// bootstrap css
+@import "themes/bootstrap-overlay/card";
+@import "themes/bootstrap-overlay/button";
+@import "themes/bootstrap-overlay/radiobox-checkbox";
+@import "themes/bootstrap-overlay/switches";
+@import "themes/bootstrap-overlay/badge";
+
+@import "themes/general";
+@import "themes/generic";
+@import "themes/plugin/animate";
+
+// theme layouts
+@import "themes/layouts/menu-lite";
+@import "themes/layouts/menu-ng";
+
+// Dashboard Widgets
+@import "themes/dashboard/widget";
+
+// custom plugin
+@import "themes/plugin/data-tables";
+
+// pages
+@import "themes/pages/authentication";
+
+// custom
+@import "themes/custom";
+
+.bg-c-gray {
+  background-color: grey;
+}
+
+.bg-c-black {
+  background-color: black;
+  color: #fff;
+}
+
+.bg-c-mint-cream {
+  background-color: #d8e4bc;
+  color: black;
+}
+
+.bg-c-mint-cream-new {
+  // background-color: #D8E4BC;
+  background-color: #eafff5;
+  color: black;
+}
+
+.status-new {
+  font-weight: "bold";
+  background: "#F5FFEA";
+}
+
+.tblDashboard {
+  // border-color: #b30000 !important;
+  table,
+  td,
+  th {
+    border: 1px solid gray;
+  }
+  //border: 1px solid black;
+}
+
+.width-60 {
+  width: 60%;
+}
+.width-40 {
+  width: 40%;
+}
+.width-90 {
+  width: 90%;
+}
+.width-10 {
+  width: 10%;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.font-color {
+  color: black;
+}
+
+.status-bgcolor-new {
+  background-color: #bbccc4;
+}
+
+.status-bgcolor {
+  background-color: #9ccc6585;
+}
+.font-color-white {
+  color: #ffff;
+}
+
+.container {
+  .panel-body {
+    height: 300px;
+    padding: 0px;
+    &.panel-regular-table {
+      overflow-y: auto;
+    }
+    table.flex-table {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      thead,
+      tbody {
+        display: block;
+      }
+      thead {
+        margin-right: 0px; //margin to align correctly to scrollbar in table body
+      }
+      tbody {
+        flex: 1; //variable height
+        overflow-y: scroll;
+      }
+      tr {
+        width: 100%;
+        display: flex;
+        td,
+        th {
+          display: block;
+          flex: 1;
+        }
+      }
+    }
+    table.flex-widths {
+      &.flex-table-aligned {
+        thead > tr {
+          overflow-y: scroll;
+          overflow-x: hidden;
+        }
+      }
+      tr {
+        td,
+        th {
+          &:nth-child(2) {
+            flex: 3;
+          }
+          &:nth-child(4) {
+            flex: 2;
+          }
+        }
+      }
+    }
+  }
+}
+
+.animatetext {
+  font-size: 24px;
+  text-align: center;
+  color: black;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #b30000, 0 0 40px #b30000, 0 0 50px #b30000, 0 0 60px #b30000,
+      0 0 70px #b30000;
+  }
+
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #00b5e6, 0 0 40px #00b5e6, 0 0 50px #00b5e6, 0 0 60px #00b5e6, 0 0 70px #00b5e6,
+      0 0 80px #00b5e6;
+  }
+}
+
+.bounce {
+  height: 50px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bounce p {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  // line-height: 50px;
+  font-size: 24px;
+  text-align: center;
+  -moz-transform: translateX(50%);
+  -webkit-transform: translateX(50%);
+  transform: translateX(50%);
+  -moz-animation: bouncing-text 5s linear infinite alternate;
+  -webkit-animation: bouncing-text 5s linear infinite alternate;
+  animation: bouncing-text 10s linear infinite alternate;
+}
+
+@-moz-keyframes bouncing-text {
+  0% {
+    -moz-transform: translateX(50%);
+  }
+  100% {
+    -moz-transform: translateX(-50%);
+  }
+}
+
+@-webkit-keyframes bouncing-text {
+  0% {
+    -webkit-transform: translateX(50%);
+  }
+  100% {
+    -webkit-transform: translateX(-50%);
+  }
+}
+
+@keyframes bouncing-text {
+  0% {
+    -moz-transform: translateX(50%);
+    -webkit-transform: translateX(50%);
+    transform: translateX(50%);
+  }
+  100% {
+    -moz-transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
+}
+
+.card-header {
+  padding: 15px !important;
+}
+
+.tblDashboard {
+  border-color: #b30000 !important;
+}
