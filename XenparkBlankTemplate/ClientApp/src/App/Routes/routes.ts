@@ -7,6 +7,8 @@ import MaintainPlantMaster from '../Pages/Master/PlantMaster/MaintainPlantMaster
 import PlantMaster from '../Pages/Master/PlantMaster/PlantMaster';
 import MaintainProductMaster from '../Pages/Master/ProductMaster/MaintainProductMaster';
 import ProductMaster from '../Pages/Master/ProductMaster/ProductMaster';
+import MaintainRoomMaster from '../Pages/Master/RoomMaster/MaintainRoomMaster';
+import RoomMaster from '../Pages/Master/RoomMaster/RoomMaster';
 import MaintainUOMMaster from '../Pages/Master/UOMMaster/MaintainUOMMaster';
 import UOMMaster from '../Pages/Master/UOMMaster/UOMMaster';
 const Dashboard = React.lazy(() => import('../Pages/Dashboard'));
@@ -45,8 +47,8 @@ const routes = [
     { path: '/area-master', exact: true, name: 'Area', component: AreaMaster },
     { path: '/maintain-area', exact: true, name: 'Add Edit area', component: MaintainAreaMaster },
     
-    { path: '/room-master', exact: true, name: 'Analytics', component: Master },
-    { path: '/maintain-room', exact: true, name: 'Add Edit room', component: MaintainMaster },
+    { path: '/room-master', exact: true, name: 'Analytics', component: RoomMaster },
+    { path: '/maintain-room', exact: true, name: 'Add Edit room', component: MaintainRoomMaster },
 
     { path: '/product-master', exact: true, name: 'Analytics', component: ProductMaster },
     { path: '/maintain-product', exact: true, name: 'Add Edit room', component: MaintainProductMaster },

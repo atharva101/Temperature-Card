@@ -103,7 +103,7 @@ const MaintainUOMMaster = (props: IMaintainMasterProps) => {
                         }
                         <Form noValidate validated={validated} onSubmit={handleSubmit}>
                             <Form.Row>
-                                <Form.Group as={Col} md="6" >
+                                {/* <Form.Group as={Col} md="6" >
                                     <Form.Label>
                                         Code
                                     </Form.Label>
@@ -117,15 +117,15 @@ const MaintainUOMMaster = (props: IMaintainMasterProps) => {
                                         disabled={true}
                                     />
                                     <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
-                                </Form.Group>
+                                </Form.Group> */}
                                 <Form.Group as={Col} md="12">
                                     <Form.Label>
-                                        Description
+                                        Unit Of Measure
                                     </Form.Label>
                                     <Form.Control
                                         required
                                         type="text"
-                                        placeholder="Description"
+                                        placeholder="Unit Of Measure"
                                         name="Description"
                                         defaultValue={master.Description}
                                         onChange={handleInputChanges}

@@ -72,12 +72,13 @@ export const saveMaster = (type: string, master: IMaster) => (dispatch: Dispatch
             else if (res.data === -101) {
                 dispatch({
                     type: MasterActionTypes.SAVE_MASTER_FAILED,
-                    payload: type === 'plant' ? 'Plant Code-Description should be unique'
-                        : type === 'block' ? 'Block Code already exists in plant'
-                            : type === 'area' ? 'Area Code already exists in plant.'
-                                : type === 'room' ? 'Room Code already exists in selected area.'
-                                    : type === 'product' ? 'Product code already exists'
-                                        : 'Something went wrong. Please try again.'
+                    payload: type === 'plant' ? 'Plant Name-Location should be unique'
+                        : type === 'block' ? 'Block already exists in plant'
+                            : type === 'area' ? 'Area already exists in plant.'
+                                : type === 'room' ? 'Room already exists in selected area.'
+                                    : type === 'product' ? 'Product already exists'
+                                        : type === 'uom' ? 'Unit of measure already exists'
+                                            : 'Something went wrong. Please try again.'
                 });
             } else {
                 dispatch({

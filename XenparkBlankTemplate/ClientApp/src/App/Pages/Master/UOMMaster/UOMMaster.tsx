@@ -90,11 +90,11 @@ const UOMMaster = (props: IMasterProps) => {
                                 <Table striped bordered hover responsive size="sm">
                                     <thead>
                                         <tr>
-                                            <th>
+                                            {/* <th>
                                                 Code
-                                            </th>
+                                            </th> */}
                                             <th>
-                                                Description
+                                                Unit Of Measure
                                             </th>
 
                                             <th>Actions</th>
@@ -104,7 +104,7 @@ const UOMMaster = (props: IMasterProps) => {
                                         {
                                             master.map((data: IMaster) => {
                                                 return <tr key={data.Id}>
-                                                    <td>{data.Code}</td>
+                                                    {/* <td>{data.Code}</td> */}
                                                     <td>{data.Description}</td>
 
                                                     <td style={{ whiteSpace: 'nowrap' }}>
