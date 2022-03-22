@@ -109,7 +109,7 @@ const BlockMaster = (props: IMasterProps) => {
                                                     <td>{data.Column3}</td>
                                                     <td>{data.ParentCode} - {data.ParentDescription}</td>
 
-                                                    <td style={{ whiteSpace: 'nowrap' }}>
+                                                    <td style={{ whiteSpace: 'nowrap',width:'180px' }}>
                                                         {
                                                             canAddEdit ?
                                                                 <Button size="sm" variant="primary" className="btn-sm btn-round has-ripple" onClick={() => redirectToMaintainUser(data.Id)} title="Edit">

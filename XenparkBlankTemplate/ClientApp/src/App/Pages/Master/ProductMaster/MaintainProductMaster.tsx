@@ -125,13 +125,13 @@ const MaintainProductMaster = (props: IMaintainMasterProps) => {
                                     <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group as={Col} md="6">
-                                    <Form.Label>Unit Of Measure</Form.Label>
+                                    <Form.Label>Unit of Measurement</Form.Label>
                                     <select value={master.ParentId ?? -1} className="form-control" name="ParentId"
                                         onChange={handleSelectChanges} required>
-                                        <option value="">Select Unit Of Measure</option>
+                                        <option value="">Select Unit of Measurement</option>
                                         {
                                             props.master.parentData.map((p, index) => {
-                                                return <option key={index} value={p.Id}>{p.Code} - {p.Description}</option>
+                                                return <option key={index} value={p.Id}>{p.Description}</option>
                                             })
                                         }
 

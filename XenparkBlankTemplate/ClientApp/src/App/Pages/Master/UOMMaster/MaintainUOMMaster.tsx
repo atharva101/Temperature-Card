@@ -45,24 +45,7 @@ const MaintainUOMMaster = (props: IMaintainMasterProps) => {
 
     useEffect(() => {
         if (props.master.status === 'saved') {
-            if (location.pathname == '/maintain-product') {
-                history.push('/product-master');
-            }
-            else if (location.pathname == '/maintain-plant') {
-                history.push('/plant-master');
-            }
-            else if (location.pathname == '/maintain-block') {
-                history.push('/block-master');
-            }
-            else if (location.pathname == '/maintain-area') {
-                history.push('/area-master');
-            }
-            else if (location.pathname == '/maintain-room') {
-                history.push('/room-master');
-            }
-            else if (location.pathname == '/maintain-uom') {
-                history.push('/uom-master');
-            }
+            history.push('/uom-master');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.master.status]);
@@ -90,7 +73,7 @@ const MaintainUOMMaster = (props: IMaintainMasterProps) => {
             <Col>
                 <Card>
                     <Card.Header>
-                        <Card.Title as="h5">{isEdit ? 'Edit Unit Of Measure' : 'Add Unit Of Measure'}</Card.Title>
+                        <Card.Title as="h5">{isEdit ? 'Edit Unit Of Mesurement' : 'Add Unit Of Mesurement'}</Card.Title>
                     </Card.Header>
                     <Card.Body>
                         {
@@ -120,12 +103,12 @@ const MaintainUOMMaster = (props: IMaintainMasterProps) => {
                                 </Form.Group> */}
                                 <Form.Group as={Col} md="12">
                                     <Form.Label>
-                                        Unit Of Measure
+                                    Unit Of Mesurement
                                     </Form.Label>
                                     <Form.Control
                                         required
                                         type="text"
-                                        placeholder="Unit Of Measure"
+                                        placeholder="Unit Of Mesurement"
                                         name="Description"
                                         defaultValue={master.Description}
                                         onChange={handleInputChanges}

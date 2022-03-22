@@ -92,7 +92,7 @@ const ProductMaster = (props: IMasterProps) => {
                                             <th>
                                                 Description
                                             </th>
-                                            <th>Unit Of Measure</th>
+                                            <th>UOM</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -100,11 +100,11 @@ const ProductMaster = (props: IMasterProps) => {
                                         {
                                             master.map((data: IMaster) => {
                                                 return <tr key={data.Id}>
-                                                    <td>{data.Code}</td>
+                                                    <td style={{ width:'120px' }}>{data.Code}</td>
                                                     <td>{data.Description}</td>
-                                                    <td>{data.ParentDescription}</td>
+                                                    <td style={{ width:'120px' }}>{data.ParentDescription}</td>
 
-                                                    <td style={{ whiteSpace: 'nowrap' }}>
+                                                    <td style={{ whiteSpace: 'nowrap',width:'180px' }}>
                                                         {
                                                             canAddEdit ?
                                                                 <Button size="sm" variant="primary" className="btn-sm btn-round has-ripple" onClick={() => redirectToMaintainUser(data.Id)} title="Edit">

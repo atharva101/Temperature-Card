@@ -88,7 +88,7 @@ const RoomMaster = (props: IMasterProps) => {
                                     <thead>
                                         <tr>
                                             <th>
-                                                Code
+                                                Number
                                             </th>
                                             <th>
                                                 Description
@@ -105,7 +105,7 @@ const RoomMaster = (props: IMasterProps) => {
                                                     <td>{data.Description}</td>
 
                                                     <td>{data.ParentDescription}</td>
-                                                    <td style={{ whiteSpace: 'nowrap' }}>
+                                                    <td style={{ whiteSpace: 'nowrap',width:'180px' }}>
                                                         {
                                                             canAddEdit ?
                                                                 <Button size="sm" variant="primary" className="btn-sm btn-round has-ripple" onClick={() => redirectToMaintainUser(data.Id)} title="Edit">

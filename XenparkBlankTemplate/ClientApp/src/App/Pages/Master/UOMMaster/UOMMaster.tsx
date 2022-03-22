@@ -94,7 +94,7 @@ const UOMMaster = (props: IMasterProps) => {
                                                 Code
                                             </th> */}
                                             <th>
-                                                Unit Of Measure
+                                                Unit Of Mesurement
                                             </th>
 
                                             <th>Actions</th>
@@ -107,7 +107,7 @@ const UOMMaster = (props: IMasterProps) => {
                                                     {/* <td>{data.Code}</td> */}
                                                     <td>{data.Description}</td>
 
-                                                    <td style={{ whiteSpace: 'nowrap' }}>
+                                                    <td style={{ whiteSpace: 'nowrap', width: '180px' }}>
                                                         {
                                                             canAddEdit ?
                                                                 <Button size="sm" variant="primary" className="btn-sm btn-round has-ripple" onClick={() => redirectToMaintainUser(data.Id)} title="Edit">

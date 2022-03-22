@@ -126,16 +126,16 @@ const Batch = (props: IBatchProps) => {
                                     <Modal.Title>Complete Batch</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>
-                                    <p>DO you want to complete selected batches.</p>
-                                    <p> All completed batches will be removed from System.</p>
+                                    <p> All completed batches will be removed permanently,</p>
+                                    <p>Do you want to proceed?</p>
 
                                 </Modal.Body>
                                 <Modal.Footer>
                                     <Button size="sm" variant="secondary" onClick={handleCloseModal}>
-                                        Close
+                                        No
                                     </Button>
                                     <Button size="sm" variant="danger" onClick={completeBatches}>
-                                        Complete Batches
+                                        Yes
                                     </Button>
                                 </Modal.Footer>
                             </Modal>

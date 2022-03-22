@@ -270,3 +270,7 @@ File: style.css
 .tblDashboard {
   border-color: #b30000 !important;
 }
+td {
+  white-space: normal !important; 
+  word-wrap: break-word;  
+}
