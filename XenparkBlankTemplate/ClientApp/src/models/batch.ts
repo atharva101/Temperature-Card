@@ -1,8 +1,10 @@
 export interface IBatch {
+    Select: boolean;
     Id: number;
     ProductId: number;
     BatchNumber: string;
-    BatchSize: number;
+    BatchSize: string;
+    UOM: string;
     Status: string;
     AddedBy: number;
     AddedOn: string | null;

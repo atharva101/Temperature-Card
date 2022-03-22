@@ -53,6 +53,24 @@ const batchReducer = (
                 ...state,
                 selectedBatchId: action.payload as number
             }
+        case BatchActionTypes.COMPLETE_BATCH_INIT:
+            return {
+                ...state,
+                status: 'inprogress',
+                error: ''
+            }
+        case BatchActionTypes.COMPLETE_BATCH_SUCCESS:
+            return {
+                ...state,
+                status: 'completed',
+                error: ''
+            }
+        case BatchActionTypes.COMPLETE_BATCH_FAILED:
+            return {
+                ...state,
+                status: 'failed',
+                error: action.payload as string
+            }
     }
     return state;
 }

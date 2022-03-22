@@ -4,7 +4,7 @@ import { Row, Col, Card, Table, Button, Modal, Alert, Spinner } from 'react-boot
 import { useHistory } from 'react-router';
 import { IBatch } from '../../../models/batch';
 import { RootState } from '../../../store/action-types';
-import { selectBatch, BatchState, fetchAllBatches } from '../../../store/batch/batch.action';
+import { selectBatch, BatchState, fetchAllBatches, completeSelectedBatches } from '../../../store/batch/batch.action';
 import { useSelector } from '../../../store/reducer';
 import { connect, useDispatch } from 'react-redux';
 import { IProduct } from '../../../models/product';
@@ -23,6 +23,7 @@ interface IBatchProps {
 }
 const Batch = (props: IBatchProps) => {
     const [batches, setBatches] = useState(props.batches.batches as IBatch[]);
+    const [checkedBatches, setCheckedBatches] = useState(props.batches.batches as IBatch[]);
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -59,11 +60,22 @@ const Batch = (props: IBatchProps) => {
     }
 
     useEffect(() => {
-        if (props.master.status === 'saved') {
+        if (props.master.status === 'saved' || props.master.status === 'done') {
             dispatch(fetchAllBatches());
+            setCheckedBatches([] as IBatch[]);
+            setShowModal(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.master.status]);
+
+    useEffect(() => {
+        if (props.batches.status === 'completed') {
+            dispatch(fetchAllBatches());
+            setCheckedBatches([] as IBatch[]);
+            setShowModal(false);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.batches.status]);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const openMenu = (event: any, row: any) => {
@@ -73,7 +85,19 @@ const Batch = (props: IBatchProps) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const gridRowSelectChange = (checkedRows: IBatch[]) => {
+        setCheckedBatches(checkedRows);
+    }
+    const [showModal, setShowModal] = useState(false);
 
+    const handleCloseModal = () => setShowModal(false);
+    const handleShowModal = () => setShowModal(true);
+    const completeBatches = () => {
+        if (checkedBatches.length > 0) {
+            dispatch(completeSelectedBatches(checkedBatches.map(x => x.Id).join()));
+        }
+
+    }
     return (<>
         <Row>
             <Col>
@@ -89,7 +113,32 @@ const Batch = (props: IBatchProps) => {
                                     :
                                     null
                             }
+                            {
+                                canAddEdit ?
+                                    <Button size="sm" variant="danger" className="btn-sm btn-round has-ripple" onClick={handleShowModal}>
+                                        <i className="feather icon-plus" /> Complete Batch
+                                    </Button>
+                                    :
+                                    null
+                            }
+                            <Modal show={showModal} onHide={handleCloseModal}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Complete Batch</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <p>DO you want to complete selected batches.</p>
+                                    <p> All completed batches will be removed from System.</p>
 
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button size="sm" variant="secondary" onClick={handleCloseModal}>
+                                        Close
+                                    </Button>
+                                    <Button size="sm" variant="danger" onClick={completeBatches}>
+                                        Complete Batches
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -110,7 +159,7 @@ const Batch = (props: IBatchProps) => {
                                     title=""
                                     columns={[
                                         { title: 'Batch #', field: 'BatchNumber' },
-                                        { title: 'Batch Size', field: 'BatchSize' },                                       
+                                        { title: 'Batch Size', field: 'BatchSize' },
                                         {
                                             title: 'Product',
                                             field: 'ProductId',
@@ -130,6 +179,7 @@ const Batch = (props: IBatchProps) => {
                                         }
                                     ]}
                                     options={{
+                                        selection: true,
                                         search: true,
                                         paging: false,
                                         maxBodyHeight: 400,
@@ -137,6 +187,7 @@ const Batch = (props: IBatchProps) => {
                                         exportButton: true,
                                         grouping: true
                                     }}
+                                    onSelectionChange={(e) => { gridRowSelectChange(e) }}
                                 />
                         }
 

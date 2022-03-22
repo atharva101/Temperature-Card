@@ -7,7 +7,7 @@ import Config from "../../config";
 export type BatchState = {
     batches: IBatch[];
     selectedBatchId: number;
-    status: 'init' | 'inprogress' | 'done' | 'failed' | 'saved';
+    status: 'init' | 'inprogress' | 'done' | 'failed' | 'saved' | 'completed';
     error: string;
 }
 
@@ -57,5 +57,26 @@ export const saveBatch = (batch: IBatch) => (dispatch: DispatchBatch) => {
             }
         }).catch(err => {
             dispatch({ type: BatchActionTypes.SAVE_BATCH_FAILED, payload: err });
+        });
+}
+
+
+export const completeSelectedBatches = (batchIds: string) => (dispatch: DispatchBatch) => {
+    dispatch({ type: BatchActionTypes.COMPLETE_BATCH_INIT, payload: batchIds });
+    axios.get(Config.apiUrl + 'api/Batch/CompleteBatch', { params: { batchIds: batchIds } })
+        .then((res: AxiosResponse<number>) => {
+            if (res.data == 101) {
+                dispatch({
+                    type: BatchActionTypes.COMPLETE_BATCH_SUCCESS,
+                    payload: res.data,
+                });
+            } else {
+                dispatch({
+                    type: BatchActionTypes.COMPLETE_BATCH_FAILED,
+                    payload: 'Something went wrong. Please try again.'
+                })
+            }
+        }).catch(err => {
+            dispatch({ type: BatchActionTypes.COMPLETE_BATCH_FAILED, payload: err });
         });
 }

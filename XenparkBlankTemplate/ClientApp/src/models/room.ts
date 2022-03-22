@@ -9,12 +9,13 @@ export interface IRoom {
     BatchId: number;
     BatchNumber: string;
     BatchSize: number;
+    UOM: string;
     RoomStatusId: number;
     RoomCurrentStatus: string;
     RoomStatusOrder: number;
     TimeStamp: string | null;
     RoomLogs: RoomLog[];
-    Product: string| null;
+    Product: string | null;
 }
 
 export interface RoomLog {

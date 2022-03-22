@@ -277,7 +277,7 @@ const TableView = (props: ITableViewProps) => {
                                 { title: 'Batch', field: 'BatchNumber' },
                                 {
                                     title: 'Size', field: 'BatchSize',
-                                    render: rowData => rowData.BatchSize > 0 ? rowData.BatchSize.toString() : ''
+                                    render: rowData => rowData.BatchSize > 0 ? rowData.BatchSize.toString() +' '+ rowData.UOM.toString() : ''
                                 },
                                 { title: 'Status', field: 'RoomCurrentStatus' }
                             ]}

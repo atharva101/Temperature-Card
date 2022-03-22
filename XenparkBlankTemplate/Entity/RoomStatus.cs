@@ -12,6 +12,7 @@ public partial class RoomStatus
     public int BatchId { get; set; }
     public string BatchNumber { get; set; }
     public int BatchSize { get; set; }
+    public string UOM { get; set; }
     public int RoomStatusId { get; set; }
     public string RoomCurrentStatus { get; set; }
     public int RoomStatusOrder { get; set; }

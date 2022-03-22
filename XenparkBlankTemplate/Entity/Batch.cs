@@ -7,6 +7,7 @@ public partial class Batch
     public int ProductId { get; set; }
     public string BatchNumber { get; set; }
     public int BatchSize { get; set; }
+    public string UOM { get; set; }
     public string Status { get; set; }
     public int AddedBy { get; set; }
     public DateTime? AddedOn { get; set; }

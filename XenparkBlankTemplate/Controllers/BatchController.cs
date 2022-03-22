@@ -216,5 +216,30 @@ namespace XenparkBlankTemplate.Controllers
             }
         }
 
+        [HttpGet]
+        public int CompleteBatch(string batchIds)
+        {
+            try
+            {
+                int userID = Convert.ToInt32(User.Claims.Where(x => x.Type == System.Security.Claims.ClaimTypes.Name).FirstOrDefault().Value);
+                using (SqlConnection sqlConnection = new SqlConnection(context.Database.GetDbConnection().ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("sprocCompleteBatch", sqlConnection))
+                    {
+                        sqlConnection.Open();
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@BatchIds", batchIds);
+                        cmd.ExecuteNonQuery();
+                        sqlConnection.Close();
+                        return 101;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _errorLogService.LogError(ex);
+                return -1;
+            }
+        }
     }
 }

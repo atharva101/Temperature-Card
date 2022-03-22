@@ -67,6 +67,7 @@ namespace XenparkBlankTemplate.Controllers
                                 room.BatchId = dtRoomStatus.Rows[i]["BatchId"] == DBNull.Value ? -1 : Convert.ToInt32(dtRoomStatus.Rows[i]["BatchId"]);
                                 room.BatchNumber = dtRoomStatus.Rows[i]["BatchNumber"] == DBNull.Value ? "" : dtRoomStatus.Rows[i]["BatchNumber"].ToString();
                                 room.BatchSize = dtRoomStatus.Rows[i]["BatchSize"] == DBNull.Value ? -1 : Convert.ToInt32(dtRoomStatus.Rows[i]["BatchSize"]);
+                                room.UOM = dtRoomStatus.Rows[i]["UOM"].ToString();
                                 room.RoomStatusId = dtRoomStatus.Rows[i]["RoomStatusId"] == DBNull.Value ? -1 : Convert.ToInt32(dtRoomStatus.Rows[i]["RoomStatusId"]);
                                 room.RoomCurrentStatus = dtRoomStatus.Rows[i]["RoomCurrentStatus"] == DBNull.Value ? "" : dtRoomStatus.Rows[i]["RoomCurrentStatus"].ToString();
                                 room.RoomStatusOrder = dtRoomStatus.Rows[i]["RoomStatusOrder"] == DBNull.Value ? -1 : Convert.ToInt32(dtRoomStatus.Rows[i]["RoomStatusOrder"]);
