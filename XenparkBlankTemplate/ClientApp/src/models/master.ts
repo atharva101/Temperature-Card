@@ -8,6 +8,7 @@ export interface IMaster {
     Approved: boolean;
     Column1:string; // UOM for Product, IP Address for Room
     Column2:string;
+    Column3:string;
 }
 
 export interface IRoomMaster {

@@ -3,46 +3,20 @@ import { useState } from 'react';
 import { Row, Col, Card, Table, Alert, Spinner, Form, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
-import { IMaster } from '../../../models/master';
-import { RootState } from '../../../store/action-types';
-
-
-import { saveMaster, selectMaster, MasterState, fetchParentData } from '../../../store/master/master.action';
+import { IMaster } from '../../../../models/master';
+import { RootState } from '../../../../store/action-types';
+import { saveMaster, selectMaster, MasterState, fetchParentData } from '../../../../store/master/master.action';
 
 interface IMaintainMasterProps {
     master: MasterState;
     saveMaster: any,
     fetchParentData: any
 }
-const MaintainMaster = (props: IMaintainMasterProps) => {
+const MaintainUOMMaster = (props: IMaintainMasterProps) => {
     const [isEdit, setIsEdit] = useState(false);
     const location = useLocation();
     const [master, setMaster] = useState({} as IMaster);
     const history = useHistory();
-    const [screen, setScreen] = useState('');
-    const [parentscreen, setparentScreen] = useState('');
-    useEffect(() => {
-        setScreen(
-            location.pathname == '/maintain-plant' ? 'Plant'
-                : location.pathname == '/maintain-block' ? 'Block'
-                    : location.pathname == '/maintain-area' ? 'Area'
-                        : location.pathname == '/maintain-room' ? 'Room'
-                            : location.pathname == '/maintain-product' ? 'Product'
-                                : location.pathname == '/maintain-uom' ? 'UOM'
-                                    : ''
-        );
-    }, []);
-    useEffect(() => {
-        setparentScreen(
-            location.pathname == '/maintain-plant' ? ''
-                : location.pathname == '/maintain-block' ? 'Plant'
-                    : location.pathname == '/maintain-area' ? 'Block'
-                        : location.pathname == '/maintain-room' ? 'Area'
-                            : location.pathname == '/maintain-product' ? ''
-                                : location.pathname == '/maintain-uom' ? ''
-                                    : ''
-        );
-    }, []);
 
     useEffect(() => {
         if (props.master.selectedMasterId > 0) {
@@ -55,11 +29,6 @@ const MaintainMaster = (props: IMaintainMasterProps) => {
         else setIsEdit(false);
     }, [props.master.selectedMasterId, props.master.master]);
 
-    useEffect(() => {
-        if (parentscreen != '') {
-            props.fetchParentData(parentscreen.toLowerCase(), true);
-        }
-    }, [parentscreen]);
 
     const [validated, setValidated] = useState(false);
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -71,24 +40,7 @@ const MaintainMaster = (props: IMaintainMasterProps) => {
         }
         setValidated(true);
 
-        if (location.pathname == '/maintain-product') {
-            props.saveMaster('product', master)
-        }
-        else if (location.pathname == '/maintain-plant') {
-            props.saveMaster('plant', master)
-        }
-        else if (location.pathname == '/maintain-block') {
-            props.saveMaster('block', master)
-        }
-        else if (location.pathname == '/maintain-area') {
-            props.saveMaster('area', master)
-        }
-        else if (location.pathname == '/maintain-room') {
-            props.saveMaster('room', master)
-        }
-        else if (location.pathname == '/maintain-uom') {
-            props.saveMaster('uom', master)
-        }
+        props.saveMaster('uom', master)
     };
 
     useEffect(() => {
@@ -138,7 +90,7 @@ const MaintainMaster = (props: IMaintainMasterProps) => {
             <Col>
                 <Card>
                     <Card.Header>
-                        <Card.Title as="h5">{isEdit ? 'Edit ' + screen : 'Add ' + screen}</Card.Title>
+                        <Card.Title as="h5">{isEdit ? 'Edit Unit Of Measure' : 'Add Unit Of Measure'}</Card.Title>
                     </Card.Header>
                     <Card.Body>
                         {
@@ -153,76 +105,33 @@ const MaintainMaster = (props: IMaintainMasterProps) => {
                             <Form.Row>
                                 <Form.Group as={Col} md="6" >
                                     <Form.Label>
-                                        {screen === "Plant" ? "Name" : "Code"}
+                                        Code
                                     </Form.Label>
                                     <Form.Control
                                         required
                                         type="text"
-                                        placeholder={screen === "Plant" ? "Name" : "Code"}
+                                        placeholder="Code"
                                         name="Code"
                                         defaultValue={master.Code}
                                         onChange={handleInputChanges}
-                                    />
-                                    <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
-                                </Form.Group>
-                                <Form.Group as={Col} md="6">
-                                    <Form.Label>
-                                        {
-                                            screen === "Plant" ? "Location" : "Description"
-                                        }
-
-                                    </Form.Label>
-                                    <Form.Control
-                                        required
-                                        type="text"
-                                        placeholder={
-                                            screen === "Plant" ? "Location" : "Description"
-                                        }
-                                        name="Description"
-                                        defaultValue={master.Description}
-                                        onChange={handleInputChanges}
+                                        disabled={true}
                                     />
                                     <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group as={Col} md="12">
                                     <Form.Label>
-                                        {
-                                            screen === "Plant" ? "Location" : "Description"
-                                        }
-
+                                        Description
                                     </Form.Label>
                                     <Form.Control
-                                        as="textarea" rows={3}
                                         required
                                         type="text"
-                                        placeholder={
-                                            screen === "Plant" ? "Location" : "Description"
-                                        }
+                                        placeholder="Description"
                                         name="Description"
                                         defaultValue={master.Description}
                                         onChange={handleInputChanges}
                                     />
                                     <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
                                 </Form.Group>
-                                {
-                                    parentscreen && parentscreen != ''
-                                        ?
-                                        <Form.Group as={Col} md="6">
-                                            <Form.Label>{parentscreen}</Form.Label>
-                                            <select value={master.ParentId ?? -1} className="form-control" name="ParentId"
-                                                onChange={handleSelectChanges}>
-                                                <option value="">Select  {parentscreen}</option>
-                                                {
-                                                    props.master.parentData.map((p, index) => {
-                                                        return <option key={index} value={p.Id}>{p.Code} - {p.Description}</option>
-                                                    })
-                                                }
-
-                                            </select>
-                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
-                                        </Form.Group>
-                                        : null
-                                }
 
                             </Form.Row>
 
@@ -249,4 +158,4 @@ const mapActionsToProps = {
     saveMaster,
     fetchParentData
 };
-export default connect(mapStateToProps, mapActionsToProps)(MaintainMaster)
+export default connect(mapStateToProps, mapActionsToProps)(MaintainUOMMaster)

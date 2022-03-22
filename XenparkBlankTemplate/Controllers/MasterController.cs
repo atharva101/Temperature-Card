@@ -63,6 +63,9 @@ namespace XenparkBlankTemplate.Controllers
                                 mast.Id = Convert.ToInt32(dtMaster.Rows[i]["Id"]);
                                 mast.Code = dtMaster.Rows[i]["Code"].ToString();
                                 mast.Description = dtMaster.Rows[i]["Description"].ToString();
+                                mast.Column1 = dtMaster.Rows[i]["Column1"].ToString();
+                                mast.Column2 = dtMaster.Rows[i]["Column2"].ToString();
+                                mast.Column3 = dtMaster.Rows[i]["Column3"].ToString();
                                 mast.ParentId = Convert.ToInt32(dtMaster.Rows[i]["ParentId"]);
                                 mast.ParentCode = dtMaster.Rows[i]["ParentCode"].ToString();
                                 mast.ParentDescription = dtMaster.Rows[i]["ParentDescription"].ToString();
@@ -145,8 +148,11 @@ namespace XenparkBlankTemplate.Controllers
                         sqlConnection.Open();
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@Id", mast.Id);
-                        cmd.Parameters.AddWithValue("@Code", mast.Code);
+                        cmd.Parameters.AddWithValue("@Code", mast.Code ?? "");
                         cmd.Parameters.AddWithValue("@Description", mast.Description);
+                        cmd.Parameters.AddWithValue("@Column1", mast.Column1??"");
+                        cmd.Parameters.AddWithValue("@Column2", mast.Column2 ?? "");
+                        cmd.Parameters.AddWithValue("@Column3", mast.Column3 ?? "");
                         cmd.Parameters.AddWithValue("@ParentId", mast.ParentId);
                         cmd.Parameters.AddWithValue("@Type", type);
 

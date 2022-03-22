@@ -48,7 +48,10 @@ const Master = (props: IMasterProps) => {
                 setAddEdit(props.permissions.filter(x => x.PermissionName === 'Add/Edit Product').length > 0 ? true : false);
                 setDelete(props.permissions.filter(x => x.PermissionName === 'Delete Product').length > 0 ? true : false);
             }
-
+            else if (screen.toLowerCase() === 'uom') {
+                setAddEdit(props.permissions.filter(x => x.PermissionName === 'Add/Edit Unit Of Measure').length > 0 ? true : false);
+                setDelete(props.permissions.filter(x => x.PermissionName === 'Delete Unit Of Measure').length > 0 ? true : false);
+            }
         }
     }, [props.permissions, screen]);
 
@@ -59,7 +62,8 @@ const Master = (props: IMasterProps) => {
                     : location.pathname == '/area-master' ? 'Area'
                         : location.pathname == '/room-master' ? 'Room'
                             : location.pathname == '/product-master' ? 'Product'
-                                : ''
+                                : location.pathname == '/uom-master' ? 'UOM'
+                                    : ''
         );
     }, []);
     useEffect(() => {
@@ -69,7 +73,8 @@ const Master = (props: IMasterProps) => {
                     : location.pathname == '/area-master' ? 'Block'
                         : location.pathname == '/room-master' ? 'Area'
                             : location.pathname == '/product-master' ? ''
-                                : ''
+                                : location.pathname == '/uom-master' ? ''
+                                    : ''
         );
     }, []);
 
@@ -90,7 +95,9 @@ const Master = (props: IMasterProps) => {
         else if (location.pathname == '/product-master') {
             dispatch(fetchMasterData('product', 0));
         }
-
+        else if (location.pathname == '/uom-master') {
+            dispatch(fetchMasterData('uom', 0));
+        }
     }, []);
 
 
@@ -123,6 +130,9 @@ const Master = (props: IMasterProps) => {
             }
             else if (location.pathname == '/product-master') {
                 dispatch(fetchMasterData('product', 0));
+            }
+            else if (location.pathname == '/uom-master') {
+                dispatch(fetchMasterData('uom', 0));
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -161,14 +171,19 @@ const Master = (props: IMasterProps) => {
                                 <Table striped bordered hover responsive size="sm">
                                     <thead>
                                         <tr>
+                                            {screen !== "Area" ?
+                                                <th>
+                                                    {
+                                                        screen === "Plant" ? "Name" : "Code"
+                                                    }
+                                                </th>
+                                                : null
+                                            }
                                             <th>
                                                 {
-                                                    screen === "Plant" ? "Name" : "Code"
-                                                }
-                                            </th>
-                                            <th>
-                                                {
-                                                    screen === "Plant" ? "Location" : "Description"
+                                                    screen === "Plant" ? "Location" :
+                                                        screen === "Area" ? "Name"
+                                                            : "Description"
                                                 }
                                             </th>
                                             {
@@ -184,16 +199,21 @@ const Master = (props: IMasterProps) => {
                                         {
                                             master.map((data: IMaster) => {
                                                 return <tr key={data.Id}>
-                                                    <td>{data.Code}</td>
+                                                    {screen !== "Area" ?
+                                                        <td>{data.Code}</td>
+                                                        : null
+                                                    }
                                                     <td>{data.Description}</td>
 
                                                     {
                                                         parentscreen && parentscreen != ''
-                                                            ?
-                                                            <td>{data.ParentCode} - {data.ParentDescription}</td>
+                                                            ?                                                            
+                                                                screen === "Area" ? <td>{data.ParentDescription}</td>
+                                                                : <td>{data.ParentCode} - {data.ParentDescription}</td>                                                            
+
                                                             : null
                                                     }
-                                                    
+
                                                     <td style={{ whiteSpace: 'nowrap' }}>
                                                         {
                                                             canAddEdit ?
