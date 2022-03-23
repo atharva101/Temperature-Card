@@ -3,8 +3,8 @@ import { Row, Col, Card, Alert, Table, Dropdown } from 'react-bootstrap';
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { IRoom, RoomLog } from '../../../models/room';
 import { RootState } from '../../../store/action-types';
-import { RoomState, changeRoomStatus, fetchAllRooms } from '../../../store/rooms/room.action';
-import { connect } from 'react-redux';
+import { RoomState, changeRoomStatus, fetchAllRooms, selectRoom, fetchRoomByDeviceIP } from '../../../store/rooms/room.action';
+import { connect, useDispatch } from 'react-redux';
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { IPermission } from '../../../models/role';
 import mylanLogo from '../../../assets/images/mylan-logo.svg';
@@ -14,6 +14,9 @@ interface IRoomDashboardProps {
     changeRoomStatus: any;
     fetchAllRooms: any;
     permissions: IPermission[];
+    fetchRoomByDeviceIP: any;
+    loggedInUser: any;
+
 }
 const RoomDashboard = (props: IRoomDashboardProps) => {
     const fullScreenHandle = useFullScreenHandle();
@@ -25,13 +28,22 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
     const [canAssignBatchToRoom, setCanAssignBatchToRoom] = useState(false);
     const [canChangeBatchStatus, setCanChangeBatchStatus] = useState(false);
-    
+    const [roomId, setRoomId] = useState(0);
+    const dispatch = useDispatch();
     useEffect(() => {
         if (props.permissions && props.permissions.length > 0) {
             setCanAssignBatchToRoom(props.permissions.filter(x => x.PermissionName === 'Assign Batch to Room').length > 0 ? true : false);
             setCanChangeBatchStatus(props.permissions.filter(x => x.PermissionName === 'Change Batch Status').length > 0 ? true : false);
         }
     }, [props.permissions]);
+
+    useEffect(() => {
+        if (props.loggedInUser.RoleId == -1) {
+            dispatch(fetchRoomByDeviceIP());
+            dispatch(selectRoom(props.rooms.rooms[1].RoomId));
+            enterFullScreen();
+        }
+    }, [])
 
 
     const enterFullScreen = () => {
@@ -121,8 +133,8 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                     </div>
 
                                     <div className="card-header-right p-3 width-60" style={{ 'cursor': 'pointer', 'display': 'flex', 'justifyContent': 'flex-end' }}>
-                                        <h5 style={{ 'padding': '0px 25px 0px 0px' }}>EQUIPMENT / ROOM STATUS LABEL</h5>
-                                        <span style={{ 'padding': '0px 5px' }}>
+                                        <h3 style={{ 'padding': '0px 25px 0px 0px' }}>EQUIPMENT / ROOM STATUS LABEL</h3>
+                                        <span style={{ 'padding': '10px 5px' }}>
                                             {!isFullScreen ?
                                                 <i className="fas fa-expand f-18" onClick={enterFullScreen}></i>
                                                 :
@@ -147,25 +159,25 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                         <tbody>
                                             <tr>
                                                 <td className="width-40">Equipment / Room Description</td>
-                                                <td className="width-60 font-color" style={{ 'fontSize': '40px', 'fontWeight': 'bold' }}>
+                                                <td className="width-60 font-color" style={{ 'fontSize': '20px', 'fontWeight': 'bold' }}>
                                                     <span>{room.RoomDesc}  </span>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td className="width-40 " >Equipment / Room No.</td>
-                                                <td className="font-color " style={{ 'fontSize': '40px', 'fontWeight': 'bold' }}>
+                                                <td className="font-color " style={{ 'fontSize': '20px', 'fontWeight': 'bold' }}>
                                                     <span>{room.RoomCode}  </span>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td >Product Name</td>
-                                                <td className="font-color" style={{ 'fontSize': '40px', 'fontWeight': 'bold' }}>
+                                                <td className="font-color" style={{ 'fontSize': '20px', 'fontWeight': 'bold', 'wordWrap': 'break-word', 'whiteSpace': 'normal' }}>
                                                     <span>{room.ProductDesc}  </span>                                                   
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td >Product Code</td>
-                                                <td className="font-color" style={{ 'fontSize': '40px', 'fontWeight': 'bold' }}>
+                                                <td className="font-color" style={{ 'fontSize': '20px', 'fontWeight': 'bold' }}>
                                                     <span>{room.ProductCode}  </span>                                                   
                                                 </td>
                                             </tr>
@@ -177,7 +189,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                             </tr>
                                             <tr>
                                                 <td >Batch Size</td>
-                                                <td className="font-color" style={{ 'fontSize': '40px', 'fontWeight': 'bold' }}>
+                                                <td className="font-color" style={{ 'fontSize': '20px', 'fontWeight': 'bold' }}>
                                                     {
                                                         room.BatchSize > 0
                                                             ?
@@ -253,7 +265,8 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
 const mapStateToProps = (state: RootState) => ({
     rooms: state.roomState as RoomState,
-    permissions: state.authentication.permissions as IPermission[]
+    permissions: state.authentication.permissions as IPermission[],
+    loggedInUser: state.authentication.loggedInUser as any,
 });
 //this map actions to our props in this functional component
 const mapActionsToProps = {

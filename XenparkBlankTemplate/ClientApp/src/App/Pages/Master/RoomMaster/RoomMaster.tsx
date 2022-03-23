@@ -94,6 +94,7 @@ const RoomMaster = (props: IMasterProps) => {
                                                 Description
                                             </th>
                                             <th>Area</th>
+                                            <th>Device IP</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -105,6 +106,7 @@ const RoomMaster = (props: IMasterProps) => {
                                                     <td>{data.Description}</td>
 
                                                     <td>{data.ParentDescription}</td>
+                                                    <td>{data.Column1}</td>
                                                     <td style={{ whiteSpace: 'nowrap',width:'180px' }}>
                                                         {
                                                             canAddEdit ?

@@ -53,6 +53,24 @@ const roomReducer = (
                 ...state,
                 status: 'done',
                 selectedRoomId: action.payload as number
+            }
+        case RoomActionTypes.FETCH_ROOM_BY_DEVICE_IP_INIT:
+            return {
+                ...state,
+                status: 'inprogress',
+                error: ''
+            }
+        case RoomActionTypes.FETCH_ROOM_BY_DEVICE_IP_SUCCESS:
+            return {
+                ...state,
+                status: 'done',
+                rooms: action.payload as IRoom[],
+            }
+        case RoomActionTypes.FETCH_ROOM_BY_DEVICE_IP_FAILED:
+            return {
+                ...state,
+                status: 'failed',
+                error: action.payload as string
             }        
     }
     return state;

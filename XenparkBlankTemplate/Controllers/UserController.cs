@@ -47,9 +47,14 @@ namespace XenparkBlankTemplate.Controllers
         {
             try
             {
+                //Check the device for login
                 model.Password = model.Password != null && model.Password.Length > 0 ? EncryptDecryptHelper.DecryptStringAES(model.Password) : "";
-
-
+                if (model.UserName == "ip" && model.Password == "ip") 
+                {
+                    model.UserName  = _userService.GetClientIP(Request.HttpContext.Connection.RemoteIpAddress);
+                    model.Password = _userService.GetClientIP(Request.HttpContext.Connection.RemoteIpAddress);   
+                }
+    
                 return _userService.Authenticate(model);
             }
             catch (Exception ex)
@@ -106,47 +111,10 @@ namespace XenparkBlankTemplate.Controllers
         public int AddEditUser(User user)
         {
             string temppassword = StaticHelper.Encrypt(user.UserName);//StaticHelper.Encrypt(StaticHelper.GenerateRandomOTP(6));
-            return MaintainUser(user, temppassword);
+            return _userService.MaintainUser(user, temppassword);
         }
 
-        public int MaintainUser(User user, string password)
-        {
-            password = StaticHelper.Encrypt(user.UserName);
-            try
-            {
-                using SqlConnection sqlConnection = new SqlConnection(context.Database.GetDbConnection().ConnectionString);
-
-                using SqlCommand cmd = new SqlCommand("sprocAddEditUser", sqlConnection);
-
-                sqlConnection.Open();
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@UserId", user.Id);
-                cmd.Parameters.AddWithValue("@FirstName", user.FirstName);
-                cmd.Parameters.AddWithValue("@LastName", user.LastName);
-                cmd.Parameters.AddWithValue("@Email", user.Email);
-                cmd.Parameters.AddWithValue("@UserName", user.UserName);
-                cmd.Parameters.AddWithValue("@IsDisabled", user.IsDisabled ?? false);
-                cmd.Parameters.AddWithValue("@IsDeleted", user.IsDeleted ?? false);
-                if (user.RoleId == null)
-                    cmd.Parameters.AddWithValue("@RoleId", DBNull.Value);
-                else
-                    cmd.Parameters.AddWithValue("@RoleId", user.RoleId ?? 0);
-                cmd.Parameters.AddWithValue("@Password", password);
-                cmd.Parameters.Add("@ReturnValue", SqlDbType.Int);
-                cmd.Parameters["@ReturnValue"].Direction = ParameterDirection.Output;
-
-                cmd.ExecuteNonQuery();
-                int returnValue = Convert.ToInt32(cmd.Parameters["@ReturnValue"].Value);
-                sqlConnection.Close();
-                return returnValue;
-            }
-            catch (Exception ex)
-            {
-                _errorLogService.LogError(ex);
-                return (int)ResponseCode.ErrorOccured;
-            }
-        }
+        
         public bool IsFirstLogin()
         {
             try

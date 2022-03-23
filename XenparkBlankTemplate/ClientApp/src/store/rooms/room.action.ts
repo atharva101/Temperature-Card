@@ -30,6 +30,20 @@ export const fetchAllRooms = () => (dispatch: DispatchRoom) => {
             dispatch({ type: RoomActionTypes.FETCH_ALL_ROOMS_FAILED, payload: err });
         });
 }
+
+export const fetchRoomByDeviceIP = () => (dispatch: DispatchRoom) => {
+    dispatch({ type: RoomActionTypes.FETCH_ROOM_BY_DEVICE_IP_INIT, payload: true });
+    axios.get(Config.apiUrl + 'api/Room/GetRoomStatusByClientIP')
+        .then((res: AxiosResponse<IRoom[]>) => {
+            dispatch({
+                type: RoomActionTypes.FETCH_ROOM_BY_DEVICE_IP_SUCCESS,
+                payload: res.data,
+            });
+        }).catch(err => {
+            dispatch({ type: RoomActionTypes.FETCH_ROOM_BY_DEVICE_IP_FAILED, payload: err });
+        });
+}
+
 export const selectRoom = (id: number) => (dispatch: DispatchRoom) => {
     dispatch({ type: RoomActionTypes.SELECT_ROOM, payload: id });
 }
