@@ -213,7 +213,7 @@ namespace XenparkBlankTemplate.Controllers
 
                 if(room != null && room.Id > 0) 
                 {
-                    var statuses = GetRoomStatus(room.Id);
+                     rs = GetRoomStatus(room.Id);
                     //rs = statuses.FirstOrDefault();
                 }
 
