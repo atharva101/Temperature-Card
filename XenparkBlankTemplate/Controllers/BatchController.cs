@@ -64,6 +64,7 @@ namespace XenparkBlankTemplate.Controllers
                                 b.ProductId = Convert.ToInt32(dtBatch.Rows[i]["ProductId"]);
                                 b.BatchNumber = dtBatch.Rows[i]["BatchNumber"].ToString();
                                 b.BatchSize = Convert.ToInt32(dtBatch.Rows[i]["BatchSize"]);
+                                b.UOM = dtBatch.Rows[i]["UOM"].ToString();
                                 b.Status = dtBatch.Rows[i]["Status"].ToString();
                                 b.Approved = Convert.ToBoolean(dtBatch.Rows[i]["Approved"]);
                                 batchs.Add(b);

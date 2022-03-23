@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { Row, Col, Card, Table, Button, Modal, Alert, Spinner } from 'react-bootstrap';
+import { Row, Col, Card, Table, Button, Modal, Alert, Spinner, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import { IBatch } from '../../../models/batch';
 import { RootState } from '../../../store/action-types';
@@ -11,7 +11,7 @@ import { IProduct } from '../../../models/product';
 import { fetchAllProducts } from '../../../store/product/product.action';
 import { approveMaster, MasterState } from '../../../store/master/master.action';
 import { IPermission } from '../../../models/role';
-import MaterialTable from "material-table";
+import MaterialTable, { MTableToolbar } from "material-table";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -60,7 +60,7 @@ const Batch = (props: IBatchProps) => {
     }
 
     useEffect(() => {
-        if (props.master.status === 'saved' || props.master.status === 'done') {
+        if (props.master.status === 'saved') {
             dispatch(fetchAllBatches());
             setCheckedBatches([] as IBatch[]);
             setShowModal(false);
@@ -158,8 +158,21 @@ const Batch = (props: IBatchProps) => {
                                 <MaterialTable
                                     title=""
                                     columns={[
+                                        {
+                                            title: '', field: 'Id',
+
+                                            render: rowData => <Form.Check
+                                                type="checkbox"
+                                                id={`chk-${rowData.Id}`}
+
+                                            />
+                                        },
                                         { title: 'Batch #', field: 'BatchNumber' },
-                                        { title: 'Batch Size', field: 'BatchSize' },
+
+                                        {
+                                            title: 'Batch Size', field: 'BatchSize',
+                                            render: rowData => rowData.BatchSize && rowData.BatchSize > 0 ? rowData.BatchSize.toString() + ' ' + rowData.UOM.toString() : ''
+                                        },
                                         {
                                             title: 'Product',
                                             field: 'ProductId',
@@ -174,18 +187,25 @@ const Batch = (props: IBatchProps) => {
                                         {
                                             icon: 'menu',
                                             tooltip: 'Actions',
-                                            isFreeAction: false,
+                                            //isFreeAction: true,
                                             onClick: (event, row) => openMenu(event, row)
                                         }
                                     ]}
+                                    // components={{
+                                    //     Action: props => (
+                                    //         <div style={{ backgroundColor: '#e8eaf5' }}>
+                                    //             button
+                                    //         </div>
+                                    //     )
+                                    // }}
                                     options={{
-                                        selection: true,
+                                         //selection: true,
                                         search: true,
                                         paging: false,
                                         maxBodyHeight: 400,
                                         actionsColumnIndex: -1,
                                         exportButton: true,
-                                        grouping: true
+                                        grouping: true,
                                     }}
                                     onSelectionChange={(e) => { gridRowSelectChange(e) }}
                                 />
@@ -213,7 +233,7 @@ const Batch = (props: IBatchProps) => {
                             }
                             &nbsp;&nbsp;
                             {
-                                canApprove && props.batches.batches.filter(x => x.Id === props.batches.selectedBatchId && !x.Approved).length > 0
+                                canApprove && batches && batches.filter(x => x.Id === props.batches.selectedBatchId && !x.Approved).length > 0
                                     ?
                                     <MenuItem onClick={() => approve()} ><i className="fas fa-stamp" /> &nbsp;Approve</MenuItem>
 

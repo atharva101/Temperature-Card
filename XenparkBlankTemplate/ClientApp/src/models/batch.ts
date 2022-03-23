@@ -3,7 +3,7 @@ export interface IBatch {
     Id: number;
     ProductId: number;
     BatchNumber: string;
-    BatchSize: string;
+    BatchSize: number;
     UOM: string;
     Status: string;
     AddedBy: number;
