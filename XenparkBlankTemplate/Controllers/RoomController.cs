@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Data;
 using System.Data;
 using System.Security.Claims;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.Net;
+using System.Net.Sockets;
 
 namespace XenparkBlankTemplate.Controllers
 {
@@ -198,5 +201,75 @@ namespace XenparkBlankTemplate.Controllers
             }
         }
 
+        [HttpGet]
+        public List<RoomStatus> GetRoomStatusByClientIP()
+        {
+            List<RoomStatus> rs = new List<RoomStatus>();
+            var ip  = _userService.GetClientIP(Request.HttpContext.Connection.RemoteIpAddress);
+            if (ip != "") 
+            {
+                // Get room Id by IP address 
+                Master room = GetRoomByIPAddress(ip);
+
+                if(room != null && room.Id > 0) 
+                {
+                    var statuses = GetRoomStatus(room.Id);
+                    //rs = statuses.FirstOrDefault();
+                }
+
+            }
+                
+            return rs;
+        }
+
+        private Master GetRoomByIPAddress(string ip) 
+        {
+            List<Master> masters = new List<Master>();
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(context.Database.GetDbConnection().ConnectionString))
+                {
+                    sqlConnection.Open();
+                    using (SqlCommand cmd = new SqlCommand("sprocGetRoomByIPAddress", sqlConnection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        DataSet data = new DataSet();
+                        cmd.Parameters.AddWithValue("@IPAddress", ip);
+
+                        SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                        sda.Fill(data);
+
+                        if (data.Tables.Count > 0 && data.Tables[0].Rows.Count > 0)
+                        {
+                            DataTable dtMaster = data.Tables[0];
+                            for (int i = 0; i < dtMaster.Rows.Count; i++)
+                            {
+                                Master mast = new Master();
+                                mast.Id = Convert.ToInt32(dtMaster.Rows[i]["Id"]);
+                                mast.Code = dtMaster.Rows[i]["Code"].ToString();
+                                mast.Description = dtMaster.Rows[i]["Description"].ToString();
+                                mast.ParentId = Convert.ToInt32(dtMaster.Rows[i]["ParentId"]);
+                                mast.ParentCode = dtMaster.Rows[i]["ParentCode"].ToString();
+                                mast.ParentDescription = dtMaster.Rows[i]["ParentDescription"].ToString();
+                                mast.Approved = Convert.ToBoolean(dtMaster.Rows[i]["Approved"]);
+                                if (dtMaster.Rows[i]["DeviceIPAddress"] != DBNull.Value) 
+                                {
+                                    mast.Column1 = dtMaster.Rows[i]["DeviceIPAddress"].ToString();
+                                }
+                                masters.Add(mast);
+                            }
+                        }
+                    }
+                    sqlConnection.Close();
+                }
+
+                return masters.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _errorLogService.LogError(ex);
+                return null;
+            }
+        }
     }
 }

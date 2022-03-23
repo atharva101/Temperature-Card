@@ -19,6 +19,15 @@ const Login = (props: any) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        // Check for device login 
+        const loginInfo: LoginInfo = {
+            userName: 'ip',
+            password: 'ip',
+        };
+        props.loginUser(loginInfo, history);
+    }, [])
+
+    useEffect(() => {
         if (props.UI.errors) {
             setErrors(props.UI.errors);
         }

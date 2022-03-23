@@ -70,6 +70,7 @@ namespace XenparkBlankTemplate.Controllers
                                 mast.ParentCode = dtMaster.Rows[i]["ParentCode"].ToString();
                                 mast.ParentDescription = dtMaster.Rows[i]["ParentDescription"].ToString();
                                 mast.Approved = Convert.ToBoolean(dtMaster.Rows[i]["Approved"]);
+                                
                                 masters.Add(mast);
                             }
                         }
@@ -140,7 +141,7 @@ namespace XenparkBlankTemplate.Controllers
             int returnValue = -101;
             try
             {
-
+                
                 using (SqlConnection sqlConnection = new SqlConnection(context.Database.GetDbConnection().ConnectionString))
                 {
                     using (SqlCommand cmd = new SqlCommand("sprocAddEditMaster", sqlConnection))
@@ -155,6 +156,7 @@ namespace XenparkBlankTemplate.Controllers
                         cmd.Parameters.AddWithValue("@Column3", mast.Column3 ?? "");
                         cmd.Parameters.AddWithValue("@ParentId", mast.ParentId);
                         cmd.Parameters.AddWithValue("@Type", type);
+                        
 
                         cmd.Parameters.Add("@ReturnValue", SqlDbType.Int);
                         cmd.Parameters["@ReturnValue"].Direction = ParameterDirection.Output;
@@ -162,6 +164,25 @@ namespace XenparkBlankTemplate.Controllers
                         cmd.ExecuteNonQuery();
                         returnValue = Convert.ToInt32(cmd.Parameters["@ReturnValue"].Value);
                         sqlConnection.Close();
+                    }
+                    // If type = room and there is an IP associated then add user for the device. 
+                    if (type == "room" && mast.Column1 != "" ) 
+                    {
+                        User user = new User() 
+                        {
+                            FirstName = "Device", 
+                            LastName = mast.Column1,
+                            UserName = mast.Column1,
+                            RoleId = -1, // For Device 
+                            Email= "donotreply@mylan.com"
+
+                        };
+                        string temppassword = EncryptDecryptHelper.EncryptStringAES(user.UserName);
+                        var result = _userService.MaintainUser(user, temppassword);
+                        if (result == (int)ResponseCode.ErrorOccured) 
+                        {
+                            throw new Exception("Register device failed");
+                        }
                     }
 
                 }

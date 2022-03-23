@@ -125,5 +125,18 @@ namespace XenparkBlankTemplate.Helper
             // Return the encrypted bytes from the memory stream.
             return encrypted;
         }
+
+        public static string EncryptStringAES(string plainText)
+        {
+            var keybytes = Encoding.UTF8.GetBytes("7061737323313233");
+            var iv = Encoding.UTF8.GetBytes("7061737323313233");
+
+            // //c# encrrption
+             var encryptStringToBytes = EncryptStringToBytes(plainText, keybytes, iv);
+
+            //DECRYPT FROM CRIPTOJS
+            var encrypted = Convert.ToBase64String(encryptStringToBytes);
+            return encrypted;
+        }
     }
 }
