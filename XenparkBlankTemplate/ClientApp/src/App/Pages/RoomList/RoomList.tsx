@@ -1,11 +1,15 @@
-import React from 'react';
-import { Row, Col, Card,} from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { Row, Col, Card, } from 'react-bootstrap';
 import { useState } from 'react';
 import TableView from './TableView'
 import TileView from './TileView';
+import { connect } from 'react-redux';
+import { RootState } from '../../../store/action-types';
+import { IUser } from '../../../models/user';
+import { useHistory } from 'react-router';
 
 interface IRoomProps {
-    
+    loggedInUser: IUser,
 }
 
 export interface IFilter {
@@ -19,11 +23,19 @@ export interface IFilter {
 }
 
 const RoomList = (props: IRoomProps) => {
+    const history = useHistory();
     const [isTileView, setTileView] = useState(false);
 
     const tileView = (value: boolean) => {
         setTileView(value);
     }
+
+    useEffect(() => {
+        if (props.loggedInUser && props.loggedInUser.RoleId === -1) {
+            history.push('/room-dashboard');
+        }
+    }, [props.loggedInUser]);
+    
     return (<>
         <Row>
             <Col>
@@ -54,6 +66,11 @@ const RoomList = (props: IRoomProps) => {
     </>);
 };
 
+const mapStateToProps = (state: RootState) => ({
+    loggedInUser: state.authentication.loggedInUser as any,
 
+});
 
-export default RoomList; //connect(mapStateToProps)(RoomList)
+export default connect(mapStateToProps)(RoomList)
+
+//export default RoomList; //connect(mapStateToProps)(RoomList)
