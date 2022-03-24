@@ -73,7 +73,7 @@ const MaintainUOMMaster = (props: IMaintainMasterProps) => {
             <Col>
                 <Card>
                     <Card.Header>
-                        <Card.Title as="h5">{isEdit ? 'Edit Unit Of Mesurement' : 'Add Unit Of Mesurement'}</Card.Title>
+                        <Card.Title as="h5">{isEdit ? 'Edit Unit Of Measurement' : 'Add Unit Of Measurement'}</Card.Title>
                     </Card.Header>
                     <Card.Body>
                         {
@@ -103,12 +103,12 @@ const MaintainUOMMaster = (props: IMaintainMasterProps) => {
                                 </Form.Group> */}
                                 <Form.Group as={Col} md="12">
                                     <Form.Label>
-                                    Unit Of Mesurement
+                                    Unit Of Measurement
                                     </Form.Label>
                                     <Form.Control
                                         required
                                         type="text"
-                                        placeholder="Unit Of Mesurement"
+                                        placeholder="Unit Of Measurement"
                                         name="Description"
                                         defaultValue={master.Description}
                                         onChange={handleInputChanges}

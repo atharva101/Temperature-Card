@@ -94,7 +94,7 @@ const UOMMaster = (props: IMasterProps) => {
                                                 Code
                                             </th> */}
                                             <th>
-                                                Unit Of Mesurement
+                                                Unit Of Measurement
                                             </th>
 
                                             <th>Actions</th>
