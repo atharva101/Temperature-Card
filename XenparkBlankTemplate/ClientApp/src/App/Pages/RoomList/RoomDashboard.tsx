@@ -40,11 +40,20 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
     useEffect(() => {
         if (props.loggedInUser.RoleId == -1) {
             dispatch(fetchRoomByDeviceIP());
-            dispatch(selectRoom(props.rooms.rooms[1].RoomId));
-            enterFullScreen();
+            setFullScreen(true);
         }
     }, [])
 
+    useEffect(() => {
+        if (props.rooms.status == 'done') {
+            const tempRoom = props.rooms.rooms[0];
+            if (tempRoom) {
+                setRoom(tempRoom);
+                console.log(tempRoom)
+                setFullScreen(true);
+            }
+        };
+    }, [props.rooms.status]);
 
     const enterFullScreen = () => {
         setFullScreen(true);
