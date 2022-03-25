@@ -40,7 +40,6 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
     useEffect(() => {
         if (props.loggedInUser.RoleId == -1) {
             dispatch(fetchRoomByDeviceIP());
-            setFullScreen(true);
         }
     }, [])
 
@@ -50,10 +49,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
             if (tempRoom) {
                 setRoom(tempRoom);
                 console.log(tempRoom)
-                // setTimeout(() => {
-                //     var b = document.getElementById("fullScreenbtn");
-                //     b?.click();
-                // }, 2000);
+                
             }
         };
     }, [props.rooms.status]);
@@ -137,7 +133,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                 <Col xl={12} md={12}>
                     <Row>
                         <Col xs={12} sm={12}>
-                            <Card className="m-b-0 bg-c-mint-cream-new">
+                            <Card className="m-b-0 bg-c-mint-cream-new" style={{ 'height': '100%' }}>
                                 <Card.Header>
                                     <div className="card-header-left width-40" >
                                         <img src={mylanLogo} alt="" width="120px" />
@@ -146,13 +142,13 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
                                     <div className="card-header-right p-3 width-60" style={{ 'cursor': 'pointer', 'display': 'flex', 'justifyContent': 'flex-end' }}>
                                         <h3 style={{ 'padding': '0px 25px 0px 0px' }}>EQUIPMENT / ROOM STATUS LABEL</h3>
-                                        <span style={{ 'padding': '10px 5px' }} onClick={enterFullScreen}>
+                                        <span style={{ 'padding': '10px 5px' }}>
                                             {!isFullScreen ?
                                                 <i className="fas fa-expand f-18" onClick={enterFullScreen}></i>
                                                 :
                                                 <i className="fas fa-compress f-18" onClick={exitFullScreen}></i>
                                             }
-                                        </span>                                       
+                                        </span>
 
                                     </div>
 
@@ -164,7 +160,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                             ?
                                             <Alert variant="danger" >
                                                 Something went wrong! Please try again.
-                                                    </Alert>
+                                            </Alert>
                                             : null
                                     }
                                     <Table bordered hover className="tblDashboard f-20 font-bold" size="sm" >
@@ -184,13 +180,13 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                             <tr>
                                                 <td >Product Name</td>
                                                 <td className="font-color" style={{ 'fontSize': '20px', 'fontWeight': 'bold', 'wordWrap': 'break-word', 'whiteSpace': 'normal' }}>
-                                                    <span>{room.ProductDesc}  </span>                                                   
+                                                    <span>{room.ProductDesc}  </span>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td >Product Code</td>
                                                 <td className="font-color" style={{ 'fontSize': '20px', 'fontWeight': 'bold' }}>
-                                                    <span>{room.ProductCode}  </span>                                                   
+                                                    <span>{room.ProductCode}  </span>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -237,7 +233,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                         room.RoomLogs.filter(x => x.RoomStatusOrder > 1).map((log: RoomLog) => {
                                                             return <th style={{ 'fontWeight': 'bold', 'background': '#F5FFEA' }} >
                                                                 Sign / Date
-                                                                    </th>
+                                                            </th>
                                                         })
                                                     }
                                                 </tr>
@@ -264,12 +260,14 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                             </tbody>
                                         </Table>
                                     </Row>
+                                </Card.Body>
+                                <Card.Footer>
                                     <Row className='p-10 font-bold'>
                                         <Col xs={4} sm={4} className="text-left" >Reference:{room.ReferenceNumber}</Col>
                                         <Col xs={4} sm={4} className="text-center">Form:{room.FormNumber}</Col>
                                         <Col xs={4} sm={4} className="text-right" >Version:{room.VersionNumber}</Col>
                                     </Row>
-                                </Card.Body>
+                                </Card.Footer>
                             </Card>
                         </Col>
                     </Row>
