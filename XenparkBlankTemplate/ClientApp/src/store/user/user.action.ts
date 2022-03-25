@@ -36,7 +36,7 @@ export const selectUser = (id: number) => (dispatch: DispatchUser) => {
 
 export const saveUser = (user: IUser) => (dispatch: DispatchUser): boolean => {
     dispatch({ type: UserActionTypes.SAVE_USER_INIT, payload: user });
-    axios.post(Config.apiUrl + 'api/User/MaintainUser', user)
+    axios.post(Config.apiUrl + 'api/User/AddEditUser', user)
         .then((res: AxiosResponse<number>) => {
             dispatch({
                 type: UserActionTypes.SAVE_USER_SUCCESS,

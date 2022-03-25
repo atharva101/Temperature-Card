@@ -137,7 +137,6 @@ const MaintainRoomMaster = (props: IMaintainMasterProps) => {
                                 <Form.Group as={Col} md="6">
                                         <Form.Label>Device IP</Form.Label>
                                         <Form.Control
-                                            required
                                             type="text"
                                             placeholder={
                                                 "Device IP"

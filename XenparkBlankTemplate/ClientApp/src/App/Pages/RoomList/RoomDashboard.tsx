@@ -40,7 +40,6 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
     useEffect(() => {
         if (props.loggedInUser.RoleId == -1) {
             dispatch(fetchRoomByDeviceIP());
-            setFullScreen(true);
         }
     }, [])
 
@@ -50,7 +49,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
             if (tempRoom) {
                 setRoom(tempRoom);
                 console.log(tempRoom)
-                setFullScreen(true);
+                
             }
         };
     }, [props.rooms.status]);
@@ -134,7 +133,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                 <Col xl={12} md={12}>
                     <Row>
                         <Col xs={12} sm={12}>
-                            <Card className="m-b-0 bg-c-mint-cream-new">
+                            <Card className="m-b-0 bg-c-mint-cream-new" style={{ 'height': '100%' }}>
                                 <Card.Header>
                                     <div className="card-header-left width-40" >
                                         <img src={mylanLogo} alt="" width="120px" />
@@ -161,7 +160,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                             ?
                                             <Alert variant="danger" >
                                                 Something went wrong! Please try again.
-                                                    </Alert>
+                                            </Alert>
                                             : null
                                     }
                                     <Table bordered hover className="tblDashboard f-20 font-bold" size="sm" >
@@ -233,8 +232,8 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.filter(x => x.RoomStatusOrder > 1).map((log: RoomLog) => {
                                                             return <th style={{ 'fontWeight': 'bold', 'background': '#F5FFEA' }} >
-                                                                SIGN / DATE
-                                                                    </th>
+                                                                Sign / Date
+                                                            </th>
                                                         })
                                                     }
                                                 </tr>
@@ -262,6 +261,13 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                         </Table>
                                     </Row>
                                 </Card.Body>
+                                <Card.Footer>
+                                    <Row className='p-10 font-bold'>
+                                        <Col xs={4} sm={4} className="text-left" >Reference:{room.ReferenceNumber}</Col>
+                                        <Col xs={4} sm={4} className="text-center">Form:{room.FormNumber}</Col>
+                                        <Col xs={4} sm={4} className="text-right" >Version:{room.VersionNumber}</Col>
+                                    </Row>
+                                </Card.Footer>
                             </Card>
 
 

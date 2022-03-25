@@ -7,7 +7,7 @@ export type MasterState = {
     master: IMaster[] | IRoomMaster[];
     parentData: IMaster[];
     selectedMasterId: number;
-    status: 'init' | 'inprogress' | 'done' | 'failed' | 'saved';
+    status: 'init' | 'inprogress' | 'done' | 'failed' | 'saved' | 'deleted';
     error: string;
 }
 
@@ -122,6 +122,32 @@ export const approveMaster = (type: string, id: number) => (dispatch: DispatchMa
             });
         }).catch(err => {
             dispatch({ type: MasterActionTypes.APPROVE_MASTER_FAILED, payload: err });
+        });
+}
+
+export const deleteMaster = (type: string, id: number) => (dispatch: DispatchMaster) => {
+    dispatch({ type: MasterActionTypes.DELETE_MASTER_INIT, payload: true });
+    let queryString = '';
+    queryString += '?type=' + type +
+        '&Id=' + id;
+
+    axios.get(Config.apiUrl + 'api/Master/DeleteMaster' + queryString)
+        .then((res: AxiosResponse<number>) => {
+            if (res) {
+                dispatch({
+                    type: MasterActionTypes.DELETE_MASTER_SUCCESS,
+                    payload: res.data,
+                });
+            }
+            else {
+                dispatch({
+                    type: MasterActionTypes.DELETE_MASTER_FAILED,
+                    payload: res,
+                });
+            }
+            
+        }).catch(err => {
+            dispatch({ type: MasterActionTypes.DELETE_MASTER_FAILED, payload: err });
         });
 }
 

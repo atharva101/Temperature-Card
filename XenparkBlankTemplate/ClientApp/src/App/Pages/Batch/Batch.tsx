@@ -9,11 +9,12 @@ import { useSelector } from '../../../store/reducer';
 import { connect, useDispatch } from 'react-redux';
 import { IProduct } from '../../../models/product';
 import { fetchAllProducts } from '../../../store/product/product.action';
-import { approveMaster, MasterState } from '../../../store/master/master.action';
+import { approveMaster, deleteMaster, MasterState } from '../../../store/master/master.action';
 import { IPermission } from '../../../models/role';
 import MaterialTable, { MTableToolbar } from "material-table";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import { confirmAlert } from 'react-confirm-alert';
 
 interface IBatchProps {
     batches: BatchState;
@@ -60,7 +61,7 @@ const Batch = (props: IBatchProps) => {
     }
 
     useEffect(() => {
-        if (props.master.status === 'saved') {
+        if (props.master.status === 'saved' || props.master.status === 'deleted') {
             dispatch(fetchAllBatches());
             setCheckedBatches([] as IBatch[]);
             setShowModal(false);
@@ -68,6 +69,26 @@ const Batch = (props: IBatchProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.master.status]);
 
+    const deleteRec = () => {
+        dispatch(deleteMaster('batch', props.batches.selectedBatchId));
+    }
+
+    const deleteDialog = () => {
+        confirmAlert({
+          title: 'Confirm to Delete',
+          message: 'Are you sure to do this.',
+          buttons: [
+            {
+              label: 'Yes',
+              onClick: () => deleteRec()
+            },
+            {
+              label: 'No',
+              onClick: () => {}
+            }
+          ]
+        });
+      };
     useEffect(() => {
         if (props.batches.status === 'completed') {
             dispatch(fetchAllBatches());
@@ -215,9 +236,9 @@ const Batch = (props: IBatchProps) => {
                             }
                             &nbsp;&nbsp;
                             {
-                                canDelete
+                                canDelete 
                                     ?
-                                    <MenuItem ><i className="feather icon-delete" /> &nbsp;Delete</MenuItem>
+                                    <MenuItem onClick={() => deleteDialog()} ><i className="feather icon-delete" /> &nbsp;Delete</MenuItem>
                                     : null
                             }
                             &nbsp;&nbsp;

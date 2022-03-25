@@ -11,11 +11,14 @@ import { fetchAllRoles } from '../../../store/role/role.action';
 import { useSelector } from '../../../store/reducer';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import { deleteMaster, MasterState } from '../../../store/master/master.action';
+import { confirmAlert } from 'react-confirm-alert';
 
 
 interface IUserProps {
     users: UserState;
     permissions: IPermission[];
+    master: MasterState;
 }
 
 const User = (props: IUserProps) => {
@@ -63,6 +66,34 @@ const User = (props: IUserProps) => {
         setAnchorEl(null);
     };
 
+    useEffect(() => {
+        if (props.master.status === 'deleted') {
+            dispatch(fetchAllRoles());
+            dispatch(fetchAllUsers());
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.master.status]);
+
+    const deleteRec = () => {
+        dispatch(deleteMaster('user', props.users.selectedUserId));
+    }
+
+    const deleteDialog = () => {
+        confirmAlert({
+          title: 'Confirm to Delete',
+          message: 'Are you sure to do this.',
+          buttons: [
+            {
+              label: 'Yes',
+              onClick: () => deleteRec()
+            },
+            {
+              label: 'No',
+              onClick: () => {}
+            }
+          ]
+        });
+      };
     return (<>
         <Row>
             <Col>
@@ -145,7 +176,7 @@ const User = (props: IUserProps) => {
                             {
                                 canDelete
                                     ?
-                                    <MenuItem ><i className="feather icon-delete" /> &nbsp;Delete</MenuItem>
+                                    <MenuItem onClick={() => deleteDialog()}  ><i className="feather icon-delete" /> &nbsp;Delete</MenuItem>
                                     : null
                             }
 
@@ -159,6 +190,7 @@ const User = (props: IUserProps) => {
 const mapStateToProps = (state: RootState) => ({
     users: state.userState as UserState,
     //roles: state.roleState.roles as IRole[],
-    permissions: state.authentication.permissions as IPermission[]
+    permissions: state.authentication.permissions as IPermission[],
+    master: state.masterState as MasterState,
 });
 export default connect(mapStateToProps)(User)

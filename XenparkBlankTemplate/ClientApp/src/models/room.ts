@@ -16,6 +16,9 @@ export interface IRoom {
     TimeStamp: string | null;
     RoomLogs: RoomLog[];
     Product: string | null;
+    ReferenceNumber: string;
+    FormNumber: string;
+    VersionNumber: string;
 }
 
 export interface RoomLog {
