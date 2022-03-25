@@ -6,8 +6,10 @@ import { IMaster } from '../../../../models/master';
 import { RootState } from '../../../../store/action-types';
 import { useSelector } from '../../../../store/reducer';
 import { useHistory, useLocation } from 'react-router-dom';
-import { fetchMasterData, selectMaster, MasterState, approveMaster } from '../../../../store/master/master.action';
+import { fetchMasterData, selectMaster, MasterState, approveMaster, deleteMaster } from '../../../../store/master/master.action';
 import { IPermission } from '../../../../models/role';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 interface IMasterProps {
     master: MasterState;
@@ -48,12 +50,32 @@ const RoomMaster = (props: IMasterProps) => {
     }
 
     useEffect(() => {
-        if (props.master.status === 'saved') {
+        if (props.master.status === 'saved' || props.master.status === 'deleted') {
             dispatch(fetchMasterData('room', 0));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.master.status]);
 
+    const deleteRec = (Id: number) => {
+        dispatch(deleteMaster('room', Id));
+    }
+
+    const deleteDialog = (Id: number) => {
+        confirmAlert({
+          title: 'Confirm to Delete',
+          message: 'Are you sure to do this.',
+          buttons: [
+            {
+              label: 'Yes',
+              onClick: () => deleteRec(Id)
+            },
+            {
+              label: 'No',
+              onClick: () => {}
+            }
+          ]
+        });
+      };
     return (<>
         <Row>
             <Col>
@@ -118,9 +140,9 @@ const RoomMaster = (props: IMasterProps) => {
 
                                                         &nbsp;&nbsp;
                                                         {
-                                                            canDelete
+                                                            canDelete && !data.IsUsed
                                                                 ?
-                                                                <Button size="sm" variant="danger" className="btn-sm btn-round has-ripple" title="Delete">
+                                                                <Button size="sm" variant="danger" className="btn-sm btn-round has-ripple" onClick={() => deleteDialog(data.Id)} title="Delete">
                                                                     <i className="feather icon-delete" />
                                                                 </Button>
                                                                 : null

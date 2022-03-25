@@ -10,4 +10,5 @@ public partial class Master
     public string ParentCode { get; set; }
     public string ParentDescription { get; set; }
     public bool Approved { get; set; }
+    public bool IsUsed {get; set;}
 }

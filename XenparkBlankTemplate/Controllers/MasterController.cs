@@ -70,6 +70,7 @@ namespace XenparkBlankTemplate.Controllers
                                 mast.ParentCode = dtMaster.Rows[i]["ParentCode"].ToString();
                                 mast.ParentDescription = dtMaster.Rows[i]["ParentDescription"].ToString();
                                 mast.Approved = Convert.ToBoolean(dtMaster.Rows[i]["Approved"]);
+                                mast.IsUsed = Convert.ToBoolean(dtMaster.Rows[i]["IsUsed"]);
                                 
                                 masters.Add(mast);
                             }
@@ -166,7 +167,7 @@ namespace XenparkBlankTemplate.Controllers
                         sqlConnection.Close();
                     }
                     // If type = room and there is an IP associated then add user for the device. 
-                    if (type == "room" && mast.Column1 != "" ) 
+                    if (type == "room" && mast.Column1 != null && mast.Column1 != "" ) 
                     {
                         User user = new User() 
                         {
@@ -246,6 +247,43 @@ namespace XenparkBlankTemplate.Controllers
             {
                 _errorLogService.LogError(ex);
                 return null;
+            }
+        }
+
+        [HttpGet]
+        public bool DeleteMaster(string type, int id)
+        {
+            bool allowed = true;
+            try
+            {
+                
+                using (SqlConnection sqlConnection = new SqlConnection(context.Database.GetDbConnection().ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("sprocDeleteMaster", sqlConnection))
+                    {
+                        sqlConnection.Open();
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Id", id);
+                        cmd.Parameters.AddWithValue("@Type", type);
+                        cmd.Parameters.Add("@Allowed", SqlDbType.Bit);
+                        cmd.Parameters["@Allowed"].Direction = ParameterDirection.Output;
+
+                        cmd.ExecuteNonQuery();
+                        allowed = Convert.ToBoolean(cmd.Parameters["@Allowed"].Value == DBNull.Value ?  false : cmd.Parameters["@Allowed"].Value);
+                        if (!allowed) 
+                        {
+                            throw new Exception("Not Allowed");
+                        }
+                        sqlConnection.Close();
+                    }
+
+                }
+                return allowed;
+            }
+            catch (Exception ex)
+            {
+                _errorLogService.LogError(ex);
+                return false;
             }
         }
 

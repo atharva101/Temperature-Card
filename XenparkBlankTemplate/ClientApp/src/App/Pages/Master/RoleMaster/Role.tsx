@@ -5,11 +5,12 @@ import { connect, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { IPermission, IRole } from '../../../../models/role';
 import { RootState } from '../../../../store/action-types';
-import { approveMaster, MasterState } from '../../../../store/master/master.action';
+import { approveMaster, deleteMaster, MasterState } from '../../../../store/master/master.action';
 import { fetchAllRoles, RoleState, selectRole } from '../../../../store/role/role.action';
 import MaterialTable from "material-table";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import { confirmAlert } from 'react-confirm-alert';
 
 interface IRoleProps {
     roles: RoleState;
@@ -56,11 +57,32 @@ const Role = (props: IRoleProps) => {
         dispatch(approveMaster('role', props.roles.selectedRoleId));
     }
     useEffect(() => {
-        if (props.master.status === 'saved') {
+        if (props.master.status === 'saved' || props.master.status === 'deleted') {
             dispatch(fetchAllRoles());
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.master.status]);
+
+    const deleteRec = () => {
+        dispatch(deleteMaster('role', props.roles.selectedRoleId));
+    }
+
+    const deleteDialog = () => {
+        confirmAlert({
+          title: 'Confirm to Delete',
+          message: 'Are you sure to do this.',
+          buttons: [
+            {
+              label: 'Yes',
+              onClick: () => deleteRec()
+            },
+            {
+              label: 'No',
+              onClick: () => {}
+            }
+          ]
+        });
+      };
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const openMenu = (event: any, row: any) => {
@@ -190,7 +212,7 @@ const Role = (props: IRoleProps) => {
                             {
                                 canDelete
                                     ?
-                                    <MenuItem ><i className="feather icon-delete" /> &nbsp;Delete</MenuItem>
+                                    <MenuItem onClick={() => deleteDialog()} ><i className="feather icon-delete" /> &nbsp;Delete</MenuItem>
                                     : null
                             }
                             &nbsp;&nbsp;

@@ -18,5 +18,9 @@ public partial class RoomStatus
     public int RoomStatusOrder { get; set; }
     public DateTime? TimeStamp { get; set; }
 
+    public string ReferenceNumber { get; set; }
+    public string FormNumber { get; set; }
+    public string VersionNumber { get; set; }
+
     public List<RoomLog> RoomLogs = new List<RoomLog>();
 }

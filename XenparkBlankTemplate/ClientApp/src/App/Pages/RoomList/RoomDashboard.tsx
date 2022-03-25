@@ -50,7 +50,10 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
             if (tempRoom) {
                 setRoom(tempRoom);
                 console.log(tempRoom)
-                setFullScreen(true);
+                // setTimeout(() => {
+                //     var b = document.getElementById("fullScreenbtn");
+                //     b?.click();
+                // }, 2000);
             }
         };
     }, [props.rooms.status]);
@@ -143,7 +146,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
                                     <div className="card-header-right p-3 width-60" style={{ 'cursor': 'pointer', 'display': 'flex', 'justifyContent': 'flex-end' }}>
                                         <h3 style={{ 'padding': '0px 25px 0px 0px' }}>EQUIPMENT / ROOM STATUS LABEL</h3>
-                                        <span style={{ 'padding': '10px 5px' }}>
+                                        <span style={{ 'padding': '10px 5px' }} onClick={enterFullScreen}>
                                             {!isFullScreen ?
                                                 <i className="fas fa-expand f-18" onClick={enterFullScreen}></i>
                                                 :
@@ -233,7 +236,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.filter(x => x.RoomStatusOrder > 1).map((log: RoomLog) => {
                                                             return <th style={{ 'fontWeight': 'bold', 'background': '#F5FFEA' }} >
-                                                                SIGN / DATE
+                                                                Sign / Date
                                                                     </th>
                                                         })
                                                     }
@@ -260,6 +263,11 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
                                             </tbody>
                                         </Table>
+                                    </Row>
+                                    <Row className='p-10 font-bold'>
+                                        <Col xs={4} sm={4} className="text-left" >Reference:{room.ReferenceNumber}</Col>
+                                        <Col xs={4} sm={4} className="text-center">Form:{room.FormNumber}</Col>
+                                        <Col xs={4} sm={4} className="text-right" >Version:{room.VersionNumber}</Col>
                                     </Row>
                                 </Card.Body>
                             </Card>

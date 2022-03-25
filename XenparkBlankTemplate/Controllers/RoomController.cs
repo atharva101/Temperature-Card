@@ -76,7 +76,9 @@ namespace XenparkBlankTemplate.Controllers
                                 room.RoomStatusOrder = dtRoomStatus.Rows[i]["RoomStatusOrder"] == DBNull.Value ? -1 : Convert.ToInt32(dtRoomStatus.Rows[i]["RoomStatusOrder"]);
                                 if (dtRoomStatus.Rows[i]["TimeStamp"] != DBNull.Value)
                                     room.TimeStamp = Convert.ToDateTime(dtRoomStatus.Rows[i]["TimeStamp"]);
-
+                                room.ReferenceNumber = dtRoomStatus.Rows[i]["ReferenceNumber"] == DBNull.Value ? "" : dtRoomStatus.Rows[i]["ReferenceNumber"].ToString();
+                                room.FormNumber = dtRoomStatus.Rows[i]["FormNumber"] == DBNull.Value ? "" : dtRoomStatus.Rows[i]["FormNumber"].ToString();
+                                room.VersionNumber = dtRoomStatus.Rows[i]["VersionNumber"] == DBNull.Value ? "" : dtRoomStatus.Rows[i]["VersionNumber"].ToString();
                                 // Get Room Log 
                                 List<RoomLog> roomLogs = new List<RoomLog>();
                                 if (data.Tables.Count > 1 && data.Tables[1].Rows.Count > 0)

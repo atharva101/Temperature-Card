@@ -89,6 +89,24 @@ const masterReducer = (
                 status: 'saved',
                 error: ''
             }
+        case MasterActionTypes.DELETE_MASTER_INIT:
+            return {
+                ...state,
+                status: 'inprogress',
+                error: ''
+            }
+        case MasterActionTypes.DELETE_MASTER_FAILED:
+            return {
+                ...state,
+                status: 'failed',
+                error: action.payload as string
+            }
+        case MasterActionTypes.DELETE_MASTER_SUCCESS:
+            return {
+                ...state,
+                status: 'deleted',
+                error: ''
+            }
     }
     return state;
 }
