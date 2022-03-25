@@ -107,25 +107,11 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
     }, [connection]);
 
     const changeStatus = async (log: RoomLog) => {
-        if (log.RoomStatusOrder === currentWorkflowState.RoomStatusOrder + 1) {
-            await Promise.all([
-                props.changeRoomStatus(room.RoomId, room.BatchId, log.RoomStatusId)
-            ]);
 
-            if (connection) await connection.send("SendMessage", "RoomStatusChanged");
-
-        }
-        else if (currentWorkflowState.IsFinal === true && log.RoomStatusOrder === 1) {
-            const status = room.RoomLogs.filter(x => x.RoomStatusOrder === 1);
-            await Promise.all([
-                props.changeRoomStatus(room.RoomId, room.BatchId, status[0].RoomStatusId)
-            ]);
-
-            if (connection) await connection.send("SendMessage", "RoomStatusChanged");
-        }
-        else {
-            return false;
-        }
+        await Promise.all([
+            props.changeRoomStatus(room.RoomId, room.BatchId, room.BatchSize, 3, log.RoomStatusId, props.loggedInUser.Id)
+        ]).then(async()=> {if (connection) await connection.send("SendMessage", "RoomStatusChanged")});
+        
     }
     return (<>
         <FullScreen handle={fullScreenHandle}>
@@ -271,7 +257,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                             </Card>
 
 
-                            {/* {
+                            {
                                 canChangeBatchStatus
                                     ?
                                     <Row>
@@ -312,27 +298,10 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
 
                                                                                 </Col>
-                                                                                <Col sm={4} className="text-right">
-                                                                                    {
-                                                                                        log.IsFinal
-                                                                                            ?
-                                                                                            <i className="feather icon-corner-down-left f-28" />
-                                                                                            :
-                                                                                            <i className="feather icon-arrow-right f-28" />
-                                                                                    }
-                                                                                </Col>
                                                                             </Row>
                                                                         </Card.Body>
                                                                         <Card.Footer
-                                                                            //className = "bg-c-green"
-
-                                                                            className={`
-                                                            ${log.IsCurrent ? "bg-c-blue"
-                                                                                    : currentWorkflowState.IsFinal === true && log.RoomStatusOrder === 1 ? "bg-c-yellow"
-                                                                                        : log.RoomStatusOrder === currentWorkflowState.RoomStatusOrder + 1 ? "bg-c-yellow"
-                                                                                            : log.IsPrev ? "bg-c-green"
-                                                                                                : "bg-c-gray"
-                                                                                }`}
+                                                                            className = "bg-c-green"
                                                                         >
                                                                             <Row className="row align-items-center">
                                                                                 <Col>
@@ -352,7 +321,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
                                     :
                                     null
-                            } */}
+                            }
                         </Col>
                     </Row>
                 </Col>
