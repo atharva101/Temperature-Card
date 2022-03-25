@@ -11,6 +11,7 @@ import roomReducer, { roomInitialState } from './rooms/room.reducer';
 import masterReducer, { masterInitialState } from './master/master.reducer';
 import menuReducer, { menuInitialState } from './menu/menu.reducer';
 import roleReducer, { roleInitialState } from './role/role.reducer';
+import uomReducer,{ uomInitialState } from './uom/uom.reducer';
 
 const reducer: Reducer<RootState> = combineReducers<RootState>({
   theme: themeReducer,
@@ -19,6 +20,7 @@ const reducer: Reducer<RootState> = combineReducers<RootState>({
   userState: userReducer,
   batchState: batchReducer,
   productState: productReducer,
+  uomState: uomReducer,
   roomState: roomReducer,
   masterState: masterReducer,
   menuState: menuReducer,
@@ -31,6 +33,7 @@ export const initialState: RootState = {
   userState: userInitialState,
   batchState: batchInitialState,
   productState: productInitialState,
+  uomState: uomInitialState,
   roomState: roomInitialState,
   masterState: masterInitialState,
   menuState: menuInitialState,

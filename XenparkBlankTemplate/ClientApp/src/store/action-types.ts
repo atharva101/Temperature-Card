@@ -5,6 +5,7 @@ import { RoomState } from "./rooms/room.action";
 import { MasterState } from "./master/master.action";
 import { MenuState } from "./menu/menu.action";
 import { RoleState } from "./role/role.action";
+import { UOMState } from "./uom/uom.action";
 
 export interface RootState {
     theme: any;
@@ -13,6 +14,7 @@ export interface RootState {
     userState: UserState;
     batchState: BatchState;
     productState: ProductState;
+    uomState: UOMState;
     roomState: RoomState,
     masterState: MasterState,
     menuState: MenuState,
@@ -63,6 +65,13 @@ export enum ProductActionTypes {
     FETCH_ALL_PRODUCTS_FAILED = 'FETCH_ALL_PRODUCTS_FAILED',
     SELECT_PRODUCT = 'SELECT_PRODUCT',
 
+}
+
+export enum UOMActionTypes{
+    FETCH_ALL_UOMS_INIT = 'FETCH_ALL_UOMS_INIT',
+    FETCH_ALL_UOMS_SUCCESS = 'FETCH_ALL_UOMS_SUCCESS',
+    FETCH_ALL_UOMS_FAILED = 'FETCH_ALL_UOMS_FAILED',
+    SELECT_PRODUCT = 'SELECT_UOM',
 }
 export enum RoomActionTypes {
     FETCH_ALL_ROOMS_INIT = 'FETCH_ALL_ROOMS_INIT',

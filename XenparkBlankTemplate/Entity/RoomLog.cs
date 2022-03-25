@@ -7,9 +7,8 @@ public partial class RoomLog
     public string RoomStatus { get; set; }
     public int RoomStatusOrder { get; set; }
     public DateTime? TimeStamp { get; set; }
-    public DateTime? ToTimeStamp { get; set; }
-    public bool IsFinal { get; set; }
-    public bool IsPrev { get; set; }
-    public bool IsCurrent { get; set; }
-    public bool IsNext { get; set; }
+    public int BatchId { get; set; }
+    public int BatchSize { get; set; }
+    public string UOM { get; set; }
+    public string UserName { get; set; }
 }

@@ -149,7 +149,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                 :
                                                 <i className="fas fa-compress f-18" onClick={exitFullScreen}></i>
                                             }
-                                        </span>                                       
+                                        </span>
 
                                     </div>
 
@@ -181,13 +181,13 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                             <tr>
                                                 <td >Product Name</td>
                                                 <td className="font-color" style={{ 'fontSize': '20px', 'fontWeight': 'bold', 'wordWrap': 'break-word', 'whiteSpace': 'normal' }}>
-                                                    <span>{room.ProductDesc}  </span>                                                   
+                                                    <span>{room.ProductDesc}  </span>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td >Product Code</td>
                                                 <td className="font-color" style={{ 'fontSize': '20px', 'fontWeight': 'bold' }}>
-                                                    <span>{room.ProductCode}  </span>                                                   
+                                                    <span>{room.ProductCode}  </span>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -263,6 +263,90 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                     </Row>
                                 </Card.Body>
                             </Card>
+
+
+                            {/* {
+                                canChangeBatchStatus
+                                    ?
+                                    <Row>
+                                        <Col>
+                                            <Card >
+                                                <Card.Body className="pb-0">
+                                                    <Row className="text-center m-25">
+                                                        {
+                                                            room.RoomLogs && room.RoomLogs.length > 0 &&
+                                                            room.RoomLogs.map((log: RoomLog) => {
+                                                                return <Col key={log.RoomStatusId} xs={12} sm={3}>
+                                                                    <Card onClick={() => changeStatus(log)} style={{ 'cursor': 'pointer' }}>
+                                                                        <Card.Body style={{ 'minHeight': '90px' }}>
+                                                                            <Row className="align-items-center">
+                                                                                <Col sm={8}>
+                                                                                    {
+                                                                                        log.TimeStamp ?
+                                                                                            <>
+                                                                                                <h6 className="text-muted m-b-0">
+                                                                                                    {
+                                                                                                        new Date(log.TimeStamp ?? '').getDate() + '/' +
+                                                                                                        (new Date(log.TimeStamp ?? '').getMonth() + 1) + '/' +
+                                                                                                        new Date(log.TimeStamp ?? '').getFullYear()
+
+
+                                                                                                    }
+                                                                                                </h6>
+                                                                                                <h6 className="text-muted m-b-0">
+                                                                                                    {
+                                                                                                        (new Date(log.TimeStamp ?? '').getHours() + 1) + ':' +
+                                                                                                        (new Date(log.TimeStamp ?? '').getMinutes() + 1) + ':' +
+                                                                                                        (new Date(log.TimeStamp ?? '').getSeconds() + 1)
+                                                                                                    }
+                                                                                                </h6>
+                                                                                            </>
+                                                                                            : null
+                                                                                    }
+
+
+                                                                                </Col>
+                                                                                <Col sm={4} className="text-right">
+                                                                                    {
+                                                                                        log.IsFinal
+                                                                                            ?
+                                                                                            <i className="feather icon-corner-down-left f-28" />
+                                                                                            :
+                                                                                            <i className="feather icon-arrow-right f-28" />
+                                                                                    }
+                                                                                </Col>
+                                                                            </Row>
+                                                                        </Card.Body>
+                                                                        <Card.Footer
+                                                                            //className = "bg-c-green"
+
+                                                                            className={`
+                                                            ${log.IsCurrent ? "bg-c-blue"
+                                                                                    : currentWorkflowState.IsFinal === true && log.RoomStatusOrder === 1 ? "bg-c-yellow"
+                                                                                        : log.RoomStatusOrder === currentWorkflowState.RoomStatusOrder + 1 ? "bg-c-yellow"
+                                                                                            : log.IsPrev ? "bg-c-green"
+                                                                                                : "bg-c-gray"
+                                                                                }`}
+                                                                        >
+                                                                            <Row className="row align-items-center">
+                                                                                <Col>
+                                                                                    <h6 className="text-white m-b-0">{log.RoomStatus}</h6>
+                                                                                </Col>
+                                                                            </Row>
+                                                                        </Card.Footer>
+                                                                    </Card>
+                                                                </Col>
+                                                            })}
+                                                    </Row>
+                                                </Card.Body>
+
+                                            </Card>
+                                        </Col>
+                                    </Row>
+
+                                    :
+                                    null
+                            } */}
                         </Col>
                     </Row>
                 </Col>

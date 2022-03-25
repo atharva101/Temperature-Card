@@ -89,7 +89,6 @@ const Batch = (props: IBatchProps) => {
         setCheckedBatches(checkedRows);
     }
     const [showModal, setShowModal] = useState(false);
-
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = () => setShowModal(true);
     const completeBatches = () => {
@@ -159,18 +158,17 @@ const Batch = (props: IBatchProps) => {
                                     title=""
                                     columns={[
                                         {
-                                            title: '', field: 'Id',
-
-                                            render: rowData => <Form.Check
-                                                type="checkbox"
-                                                id={`chk-${rowData.Id}`}
-
-                                            />
+                                            title: 'Batch #', field: 'BatchNumber',
+                                            cellStyle: {
+                                                maxWidth: 200
+                                            },
                                         },
-                                        { title: 'Batch #', field: 'BatchNumber' },
 
                                         {
                                             title: 'Batch Size', field: 'BatchSize',
+                                            cellStyle: {
+                                                maxWidth: 250
+                                            },
                                             render: rowData => rowData.BatchSize && rowData.BatchSize > 0 ? rowData.BatchSize.toString() + ' ' + rowData.UOM.toString() : ''
                                         },
                                         {
@@ -181,25 +179,16 @@ const Batch = (props: IBatchProps) => {
                                                 return acc;
                                             }, {})
                                         },
-                                    ]}
-                                    data={batches}
+                                    ]}                                    
+                                    data={batches ? batches : [] as IBatch[]}
                                     actions={[
                                         {
                                             icon: 'menu',
                                             tooltip: 'Actions',
-                                            //isFreeAction: true,
                                             onClick: (event, row) => openMenu(event, row)
                                         }
                                     ]}
-                                    // components={{
-                                    //     Action: props => (
-                                    //         <div style={{ backgroundColor: '#e8eaf5' }}>
-                                    //             button
-                                    //         </div>
-                                    //     )
-                                    // }}
                                     options={{
-                                         //selection: true,
                                         search: true,
                                         paging: false,
                                         maxBodyHeight: 400,

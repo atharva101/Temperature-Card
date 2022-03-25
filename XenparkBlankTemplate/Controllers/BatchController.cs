@@ -205,6 +205,7 @@ namespace XenparkBlankTemplate.Controllers
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@BatchId", batchId);
                         cmd.Parameters.AddWithValue("@RoomId", roomId);
+                        cmd.Parameters.AddWithValue("@UserId", userID);
                         cmd.ExecuteNonQuery();
                         sqlConnection.Close();
                     }

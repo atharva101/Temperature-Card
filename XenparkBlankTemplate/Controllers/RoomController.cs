@@ -92,21 +92,10 @@ namespace XenparkBlankTemplate.Controllers
                                             rl.RoomStatusOrder = Convert.ToInt32(row["RoomStatusOrder"]);
                                             if (row["TimeStamp"] != DBNull.Value)
                                                 rl.TimeStamp = Convert.ToDateTime(row["TimeStamp"]);
-                                            if (row["ToTimeStamp"] != DBNull.Value)
-                                                rl.ToTimeStamp = Convert.ToDateTime(row["ToTimeStamp"]);
-                                            //try
-                                            //{
-                                            //    rl.ToTimeStamp = Convert.ToDateTime(row["ToTimeStamp"]);
-                                            //}
-                                            //catch (System.Exception)
-                                            //{
-
-                                            //    rl.ToTimeStamp = null;
-                                            //}
-                                            rl.IsFinal = Convert.ToBoolean(row["IsFinal"]);
-                                            rl.IsPrev = Convert.ToBoolean(row["IsPrev"]);
-                                            rl.IsCurrent = Convert.ToBoolean(row["IsCurrent"]);
-                                            rl.IsNext = Convert.ToBoolean(row["IsNext"]);
+                                            rl.BatchId = row["BatchId"] == DBNull.Value ? -1 : Convert.ToInt32(row["BatchId"]);
+                                            rl.BatchSize = row["BatchSize"] == DBNull.Value ? -1 : Convert.ToInt32(row["BatchSize"]);
+                                            rl.UOM = row["UOM"].ToString();
+                                            rl.UserName = row["UserName"].ToString();
                                             roomLogs.Add(rl);
                                         }
                                     }

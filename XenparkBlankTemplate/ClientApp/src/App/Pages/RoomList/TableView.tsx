@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Row, Col, Alert, Spinner, Button, Form, } from 'react-bootstrap';
+import { Row, Col, Alert, Spinner, Button, Form, Modal, } from 'react-bootstrap';
 import { RootState } from '../../../store/action-types';
 import { useState } from 'react';
 import { fetchAllRooms, selectRoom, RoomState, assignBatch } from '../../../store/rooms/room.action';
@@ -8,14 +8,14 @@ import { connect, useDispatch } from 'react-redux';
 import { IRoomMaster } from '../../../models/master';
 import { fetchRoomMasterData } from '../../../store/master/master.action';
 import MaterialTable from "material-table";
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
-import MaintainBatch from '../Batch/MaintainBatch';
 import { BatchState, fetchAllBatches, saveBatch } from '../../../store/batch/batch.action';
 import { IBatch } from '../../../models/batch';
 import { IPermission } from '../../../models/role';
 import { IRoom } from '../../../models/room';
 import { IProduct } from '../../../models/product';
 import { fetchAllProducts } from '../../../store/product/product.action';
+import { IUOM } from '../../../models/uom';
+import { fetchAllUOMs } from '../../../store/uom/uom.action';
 
 interface ITableViewProps {
     rooms: RoomState;
@@ -23,6 +23,7 @@ interface ITableViewProps {
     batches: BatchState;
     permissions: IPermission[];
     products: IProduct[];
+    uoms: IUOM[];
 }
 export interface IFilter {
     plantId: number;
@@ -35,12 +36,12 @@ export interface IFilter {
 }
 
 const TableView = (props: ITableViewProps) => {
-    const [validated, setValidated] = useState(false);
     const [rooms, setRooms] = useState(props.rooms.rooms);
     const [roomMaster, setRoomMasters] = useState(props.roomMaster);
     const [roomId, setRoomId] = useState(0);
     const [batches, setBatches] = useState({} as IBatch[]);
     const [batch, setBatch] = useState({} as IBatch);
+    const [validated, setValidated] = useState(false);
     const [filter, setFilters] = useState(
         {
             plantId: 0,
@@ -58,10 +59,6 @@ const TableView = (props: ITableViewProps) => {
     if (configOpen) {
         configClass = [...configClass, 'open'];
     }
-
-    //const [batches, setBatches] = useState([] as IBatch[]);
-    const [batchId, setBatchId] = useState(0);
-
 
     const history = useHistory();
     const dispatch = useDispatch();
@@ -83,14 +80,14 @@ const TableView = (props: ITableViewProps) => {
     useEffect(() => {
         setRooms(props.rooms.rooms);
         setBatches(props.batches.batches);
-        setBatchId(0);
     }, [props.rooms.rooms]);
 
     useEffect(() => {
         dispatch(fetchAllRooms());
         dispatch(fetchRoomMasterData());
-        dispatch(fetchAllBatches(true));
+        dispatch(fetchAllBatches(false)); // Show all batches
         dispatch(fetchAllProducts(true));
+        dispatch(fetchAllUOMs(true));
     }, []);
 
 
@@ -102,31 +99,25 @@ const TableView = (props: ITableViewProps) => {
         history.push('/room-dashboard');
     }
 
-    const [openBatch, setOpenBatch] = React.useState(false);
-    const handleCloseBatch = () => {
-        setOpenBatch(false);
-    };
-
     const handleOpen = (event: any, row: any) => {
         dispatch(selectRoom(row.RoomId));
         setRoomId(row.RoomId);
-        dispatch(fetchAllBatches(true, row.RoomId));
+        dispatch(fetchAllBatches(false, row.RoomId));
         //setBatches(props.batches.batches);
         setOpen(true);
     };
 
-    const handleClickOpenBatch = () => {
+    // deepak
+    const [openBatchSize, setOpenBatch] = React.useState(false);
+    const [selectedRoom, setSelectedRoom] = React.useState({} as IRoom);
+    const handleCloseBatchSize = () => { setOpenBatch(false); };
+    const handleOpenBatchSize = (event: any, row: any) => {
         setOpenBatch(true);
+        setSelectedRoom(row);
     };
+    const handleEditBatchSizeOpen = (event: any, row: IRoom) => {
 
-    const handlBatchChange = (e: any) => {
-        const { name, value } = e.target;
-        setBatches({
-            ...batches,
-            [name]: value,
-        });
-        setBatchId(parseInt(e.target.value));
-    }
+    };
 
     const [open, setOpen] = React.useState(false);
     const handleClickOpen = () => {
@@ -134,25 +125,6 @@ const TableView = (props: ITableViewProps) => {
     };
     const handleClose = () => {
         setOpen(false);
-    };
-    const handleSelectProduct = (e: any) => {
-        e.preventDefault();
-        const { name, value } = e.target;
-        setBatch({
-            ...batch,
-            [name]: value,
-        });
-    }
-    const handleCreateBatch = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-            event.stopPropagation();
-        }
-        setValidated(true);
-        let tempBatch = batch;
-        tempBatch = { ...batch, BatchLogger: [{ Id: 0, BatchId: 0, RoomId: roomId, TimeStamp: '' }] }
-        dispatch(saveBatch(tempBatch))
     };
 
     useEffect(() => {
@@ -163,8 +135,8 @@ const TableView = (props: ITableViewProps) => {
     }, [props.batches.status]);
 
 
-    const handleFormSubmit = () => {
-        dispatch(assignBatch(batchId, roomId))
+    const assignBatchToRoom = (selectedbatch: IBatch) => {
+        dispatch(assignBatch(selectedbatch.Id, roomId))
 
     };
     useEffect(() => {
@@ -243,11 +215,18 @@ const TableView = (props: ITableViewProps) => {
         } as IFilter);
         setRooms(props.rooms.rooms);
     }
-    const [radioValue, setRadioValue] = useState('assignbatch');
-    const onRadioChangeValue = (event: any) => {
-        setRadioValue(event.target.value);
-    }
 
+    const handleEditBatchSize = () => {
+        //Deepak
+    }
+    const handleSelectUOM = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        setSelectedRoom({
+            ...selectedRoom,
+            [name]: value,
+        });
+    }
     const tableHeight = (window.innerHeight - 50 - 62 - 64 - 53 - 45 - 56) / window.innerHeight * 100;
     return (<>
         <Row>
@@ -277,32 +256,23 @@ const TableView = (props: ITableViewProps) => {
                                 { title: 'Batch', field: 'BatchNumber' },
                                 {
                                     title: 'Size', field: 'BatchSize',
-                                    render: rowData => rowData.BatchSize > 0 ? rowData.BatchSize.toString() +' '+ rowData.UOM.toString() : ''
+                                    render: rowData => rowData.BatchSize > 0 ? rowData.BatchSize.toString() + ' ' + rowData.UOM.toString() : ''
                                 },
                                 { title: 'Status', field: 'RoomCurrentStatus' }
                             ]}
                             data={rooms ? rooms : [] as IRoom[]}
-                            // actions={[
-                            //     {
-                            //         icon: 'visibility',
-                            //         tooltip: 'View',
-                            //         onClick: (event, row) => redirectToRoomDashboard(event, row),
-
-                            //     },
-                            //     {
-                            //         icon: 'assignment_turned_in',
-                            //         tooltip: 'Assign Batch',
-                            //         onClick: (event, rowData) => handleOpen(event, rowData),
-
-                            //     }
-                            // ]}
                             actions={[
                                 (rowData) => {
                                     return { icon: 'visibility', disable: true, onClick: (event, row) => redirectToRoomDashboard(event, row) }
                                 },
                                 (rowData) => {
-                                    return canAssignBatchToRoom && (rowData.BatchId < 1 && (rowData.RoomStatusOrder == 1 || rowData.RoomStatusOrder == -1))
+                                    return canAssignBatchToRoom
                                         ? { icon: 'assignment_turned_in', disable: false, onClick: (event, rowData) => handleOpen(event, rowData) }
+                                        : { icon: '', disable: true, onClick: (rowData) => { } }
+                                },
+                                (rowData) => {
+                                    return canAssignBatchToRoom
+                                        ? { icon: 'edit', disable: false, onClick: (event, row) => handleOpenBatchSize(event, row) }
                                         : { icon: '', disable: true, onClick: (rowData) => { } }
                                 }
                             ]}
@@ -316,129 +286,124 @@ const TableView = (props: ITableViewProps) => {
                             }}
                         />
                 }
+
+                <Modal size="lg" show={open} onClose={handleClose} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            Batch Assign
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <MaterialTable title=""
+                            columns={[
+                                {
+                                    title: 'Batch #', field: 'BatchNumber',
+                                    cellStyle: {
+                                        minWidth: 150
+                                    },
+                                },
+
+                                {
+                                    title: 'Batch Size', field: 'BatchSize',
+                                    cellStyle: {
+                                        minWidth: 150
+                                    },
+                                    render: rowData => rowData.BatchSize && rowData.BatchSize > 0 ? rowData.BatchSize.toString() + ' ' + rowData.UOM.toString() : ''
+                                },
+                                {
+                                    title: 'Product',
+                                    field: 'ProductId',
+
+                                    lookup: props.products.reduce(function (acc: any, cur: IProduct, i: number) {
+                                        acc[cur.Id] = cur.Code + ' - ' + cur.Description;
+                                        return acc;
+                                    }, {}),
+                                },
+                                {
+                                    title: 'Assign',
+                                    field: 'Id',
+                                    render: rowData => <Button size="sm" onClick={() => assignBatchToRoom(rowData)} color="danger">Assign</Button>
+                                },
+                            ]}
+                            data={batches}
+
+                            options={{
+                                search: true,
+                                paging: false,
+                                maxBodyHeight: 400,
+
+                                exportButton: true,
+                                grouping: true,
+                            }}
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={handleClose} color="danger">
+                            Cancel
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal size="lg" show={openBatchSize} onClose={handleCloseBatchSize} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            Edit Batch Size
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Row>
+                            <Col>
+                                {
+                                    props.rooms.error && props.rooms.error.length > 0
+                                        ?
+                                        <Alert variant="danger">
+                                            {props.rooms.error}
+                                        </Alert>
+                                        : null
+                                }
+                                <Form id="batch-form" noValidate validated={validated} onSubmit={handleEditBatchSize}>
+                                    <Form.Row>
+                                        <Form.Group as={Col} md="6">
+                                            <Form.Label>Batch Size</Form.Label>
+                                            <Form.Control
+                                                required
+                                                type="text"
+                                                placeholder="Batch Size"
+                                                name="BatchSize"
+                                                defaultValue={batch.BatchSize}
+                                                onChange={handleBatchChanges}
+                                            />
+                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                        </Form.Group>
+
+                                        <Form.Group as={Col} md="6">
+                                            <Form.Label>Product</Form.Label>
+                                            <select value={batch.UOM ?? -1} className="form-control" name="ProductId"
+                                            >
+                                                <option value="">--Select--</option>
+                                                {
+                                                    props.uoms.map(u => {
+                                                        return <option key={u.Id} value={u.Description}>{u.Description}</option>
+                                                    })
+                                                }
+                                            </select>
+                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                        </Form.Group>
+                                    </Form.Row>
+                                </Form>
+
+                            </Col>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={handleCloseBatchSize} color="danger">
+                            Cancel
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </Col>
         </Row>
 
-        <div>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Batch Assign</DialogTitle>
-                <DialogContent>
-                    <Row>
-                        <Col>
-                            <div className="input-group">
-                                <input type="radio" name="batch" value="assignbatch"
-                                    checked={radioValue === 'assignbatch'}
-                                    onChange={(e) => onRadioChangeValue(e)} />
-                                <h6 style={{ paddingLeft: '10px' }}>Select Batch</h6>
-                            </div>
-                            <select value={batchId} className="form-control" name="batchId"
-                                onChange={handlBatchChange}>
-                                <option>Select</option>
-                                {
-                                    props.batches.batches && props.batches.batches.map((p, index) => {
-                                        return <option key={index} value={p.Id}>{p.BatchNumber} </option>
-                                    })
-                                }
-                            </select>
-                        </Col>
-                    </Row>
-                    {
-                        canCreateAndAssignBatch ?
-                            <>
-                                <Row><Col> <h6 style={{ padding: '10px', textAlign: 'center' }}>OR</h6></Col> </Row>
-                                <Row>
-                                    <Col>
-                                        <div className="input-group">
-                                            <input type="radio" name="batch" value="createbatch"
-                                                checked={radioValue === 'createbatch'}
-                                                onChange={(e) => onRadioChangeValue(e)} />
-                                            <h6 style={{ paddingLeft: '10px' }}>Create and Assign Batch</h6>
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {
-                                            props.batches.error && props.batches.error.length > 0
-                                                ?
-                                                <Alert variant="danger">
-                                                    {props.batches.error}
-                                                </Alert>
-                                                : null
-                                        }
-                                        <Form id="batch-form" noValidate validated={validated} onSubmit={handleCreateBatch}>
-                                            <Form.Row>
-                                                <Form.Group as={Col} md="6" >
-                                                    <Form.Label>Batch #</Form.Label>
-                                                    <Form.Control
-                                                        required
-                                                        type="text"
-                                                        placeholder="Batch #"
-                                                        name="BatchNumber"
-                                                        defaultValue={batch.BatchNumber}
-                                                        onChange={handleBatchChanges}
-                                                        disabled={radioValue === 'assignbatch'}
-                                                    />
-                                                    <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
-                                                </Form.Group>
-                                                <Form.Group as={Col} md="6">
-                                                    <Form.Label>Batch Size</Form.Label>
-                                                    <Form.Control
-                                                        required
-                                                        type="text"
-                                                        placeholder="Batch Size"
-                                                        name="BatchSize"
-                                                        defaultValue={batch.BatchSize}
-                                                        onChange={handleBatchChanges}
-                                                        disabled={radioValue === 'assignbatch'}
-                                                    />
-                                                    <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
-                                                </Form.Group>
 
-                                                <Form.Group as={Col} md="6">
-                                                    <Form.Label>Product</Form.Label>
-                                                    <select value={batch.ProductId ?? -1} className="form-control" name="ProductId"
-                                                        onChange={handleSelectProduct} disabled={radioValue === 'assignbatch'}>
-                                                        <option value="">--Select--</option>
-                                                        {
-                                                            props.products.map(product => {
-                                                                return <option key={product.Id} value={product.Id}>{product.Code + ' - ' + product.Description}</option>
-                                                            })
-                                                        }
-                                                    </select>
-                                                    <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
-                                                </Form.Group>
-                                            </Form.Row>
-                                        </Form>
-
-                                    </Col>
-                                </Row>
-                            </>
-                            : null
-                    }
-
-                </DialogContent>
-                <DialogActions>
-                    {canCreateAndAssignBatch && radioValue === 'createbatch'
-                        ?
-                        <Button color="primary" type="submit" form="batch-form">Save</Button>
-                        : null
-                    }
-                    {
-                        radioValue === 'assignbatch' ?
-                            <Button color="primary" onClick={handleFormSubmit}>
-                                Save
-                            </Button>
-                            : null
-                    }
-
-                    <Button onClick={handleClose} color="danger">
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-        </div>
 
         <div id="styleSelector" className={configClass.join(' ')}>
             <div className="style-toggler">
@@ -561,7 +526,8 @@ const mapStateToProps = (state: RootState) => ({
     roomMaster: state.masterState.master as IRoomMaster[],
     batches: state.batchState as BatchState,
     permissions: state.authentication.permissions as IPermission[],
-    products: state.productState.products as IProduct[]
+    products: state.productState.products as IProduct[],
+    uoms: state.uomState.uoms as IUOM[]
 });
 
 export default connect(mapStateToProps)(TableView)
