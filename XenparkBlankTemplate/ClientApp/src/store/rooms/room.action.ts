@@ -48,9 +48,9 @@ export const selectRoom = (id: number) => (dispatch: DispatchRoom) => {
     dispatch({ type: RoomActionTypes.SELECT_ROOM, payload: id });
 }
 
-export const changeRoomStatus = (roomId: number, batchId: number, statusId: number) => (dispatch: DispatchRoom) => {
+export const changeRoomStatus = (roomId: number, batchId: number, batchSize: number, uom: number,  statusId: number, userId: number) => (dispatch: DispatchRoom) => {
     dispatch({ type: RoomActionTypes.CHANGE_ROOM_STATUS_INIT, payload: true });
-    axios.get(Config.apiUrl + 'api/Room/ChangeRoomStatus', { params: { roomId: roomId, batchId: batchId, statusId: statusId } })
+    axios.get(Config.apiUrl + 'api/Room/ChangeRoomStatus', { params: { roomId: roomId, batchId: batchId, batchSize: batchSize, uom: uom, statusId: statusId, userId: userId } })
         .then((res: AxiosResponse<number>) => {
             // let action = fetchAllRooms();
             dispatch({
