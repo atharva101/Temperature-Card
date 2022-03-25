@@ -193,6 +193,34 @@ namespace XenparkBlankTemplate.Controllers
         }
 
         [HttpGet]
+        public int EditBatchSize(int roomId, int batchId, int batchSize, string uom)
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(context.Database.GetDbConnection().ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("sprocEditBatchSize", sqlConnection))
+                    {
+                        sqlConnection.Open();
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@RoomId", roomId);
+                        cmd.Parameters.AddWithValue("@BatchId", batchId);
+                        cmd.Parameters.AddWithValue("@BatchSize", batchSize);
+                        cmd.Parameters.AddWithValue("@UOM", uom);
+                        cmd.ExecuteNonQuery();
+                        sqlConnection.Close();
+                        return 501;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _errorLogService.LogError(ex);
+                return -101;
+            }
+        }
+        [HttpGet]
         public List<RoomStatus> GetRoomStatusByClientIP()
         {
             List<RoomStatus> rs = new List<RoomStatus>();

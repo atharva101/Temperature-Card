@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Row, Col, Alert, Spinner, Button, Form, Modal, } from 'react-bootstrap';
 import { RootState } from '../../../store/action-types';
 import { useState } from 'react';
-import { fetchAllRooms, selectRoom, RoomState, assignBatch } from '../../../store/rooms/room.action';
+import { fetchAllRooms, selectRoom, RoomState, assignBatch, editBatchSize } from '../../../store/rooms/room.action';
 import { useHistory } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import { IRoomMaster } from '../../../models/master';
@@ -87,7 +87,7 @@ const TableView = (props: ITableViewProps) => {
         dispatch(fetchRoomMasterData());
         dispatch(fetchAllBatches(false)); // Show all batches
         dispatch(fetchAllProducts(true));
-        dispatch(fetchAllUOMs(true));
+        dispatch(fetchAllUOMs(false));
     }, []);
 
 
@@ -115,9 +115,7 @@ const TableView = (props: ITableViewProps) => {
         setOpenBatch(true);
         setSelectedRoom(row);
     };
-    const handleEditBatchSizeOpen = (event: any, row: IRoom) => {
 
-    };
 
     const [open, setOpen] = React.useState(false);
     const handleClickOpen = () => {
@@ -142,6 +140,7 @@ const TableView = (props: ITableViewProps) => {
     useEffect(() => {
         if (props.rooms.status === 'saved') {
             setOpen(false);
+            setOpenBatch(false);
             dispatch(fetchAllRooms());
         }
 
@@ -155,14 +154,7 @@ const TableView = (props: ITableViewProps) => {
             [name]: value,
         });
     }
-    const handleBatchChanges = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const { name, value } = e.target;
-        setBatch({
-            ...batch,
-            [name]: value,
-        });
-    }
+
     const handleSelectChanges = (e: any) => {
         e.preventDefault();
         const { name, value } = e.target;
@@ -217,9 +209,23 @@ const TableView = (props: ITableViewProps) => {
     }
 
     const handleEditBatchSize = () => {
-        //Deepak
+        if (selectedRoom.BatchSize > 0 && selectedRoom.UOM.length > 0) {
+            setValidated(true);
+            dispatch(editBatchSize(selectedRoom));
+        }
+        else {
+            setValidated(false);
+        }
     }
-    const handleSelectUOM = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleBatchSizeChanges = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        setSelectedRoom({
+            ...selectedRoom,
+            [name]: value,
+        });
+    }
+    const handleSelectUOM = (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
         const { name, value } = e.target;
         setSelectedRoom({
@@ -360,7 +366,7 @@ const TableView = (props: ITableViewProps) => {
                                         </Alert>
                                         : null
                                 }
-                                <Form id="batch-form" noValidate validated={validated} onSubmit={handleEditBatchSize}>
+                                <Form id="edit-batch-size-form" noValidate validated={validated}>
                                     <Form.Row>
                                         <Form.Group as={Col} md="6">
                                             <Form.Label>Batch Size</Form.Label>
@@ -369,16 +375,16 @@ const TableView = (props: ITableViewProps) => {
                                                 type="text"
                                                 placeholder="Batch Size"
                                                 name="BatchSize"
-                                                defaultValue={batch.BatchSize}
-                                                onChange={handleBatchChanges}
+                                                defaultValue={selectedRoom.BatchSize}
+                                                onChange={handleBatchSizeChanges}
                                             />
                                             <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
                                         </Form.Group>
 
                                         <Form.Group as={Col} md="6">
                                             <Form.Label>Product</Form.Label>
-                                            <select value={batch.UOM ?? -1} className="form-control" name="ProductId"
-                                            >
+                                            <select value={selectedRoom.UOM ?? -1} className="form-control" name="UOM"
+                                                onChange={handleSelectUOM}>
                                                 <option value="">--Select--</option>
                                                 {
                                                     props.uoms.map(u => {
@@ -395,6 +401,7 @@ const TableView = (props: ITableViewProps) => {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
+                        <Button color="primary" onClick={handleEditBatchSize}>Save</Button>
                         <Button onClick={handleCloseBatchSize} color="danger">
                             Cancel
                         </Button>

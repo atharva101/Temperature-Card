@@ -62,9 +62,9 @@ export const changeRoomStatus = (roomId: number, batchId: number, statusId: numb
         });
 }
 
-export const assignBatch = (batchId: number,roomId: number) => (dispatch: DispatchRoom) => {
+export const assignBatch = (batchId: number, roomId: number) => (dispatch: DispatchRoom) => {
     dispatch({ type: RoomActionTypes.ASSIGN_BATCH_STATUS_INIT, payload: true });
-    axios.get(Config.apiUrl + 'api/Batch/AssignBatchToRoom', { params: {batchId: batchId, roomId: roomId } })
+    axios.get(Config.apiUrl + 'api/Batch/AssignBatchToRoom', { params: { batchId: batchId, roomId: roomId } })
         .then((res: AxiosResponse<number>) => {
             // let action = fetchAllRooms();
             dispatch({
@@ -74,4 +74,23 @@ export const assignBatch = (batchId: number,roomId: number) => (dispatch: Dispat
         }).catch((err: Error) => {
             dispatch({ type: RoomActionTypes.ASSIGN_BATCH_STATUS_FAILED, payload: err.message });
         });
+}
+
+export const editBatchSize = (selectedRoom: IRoom) => (dispatch: DispatchRoom) => {
+    dispatch({ type: RoomActionTypes.EDIT_BATCHSIZE_INIT, payload: true });
+    axios.get(Config.apiUrl + 'api/Room/EditBatchSize', {
+        params: {
+            roomId: selectedRoom.RoomId,
+            batchId: selectedRoom.BatchId,            
+            batchSize: selectedRoom.BatchSize,
+            uom: selectedRoom.UOM
+        }
+    }).then((res: AxiosResponse<number>) => {        
+        dispatch({
+            type: RoomActionTypes.EDIT_BATCHSIZE_SUCCESS,
+            payload: res.data,
+        });
+    }).catch((err: Error) => {
+        dispatch({ type: RoomActionTypes.EDIT_BATCHSIZE_FAILED, payload: err.message });
+    });
 }

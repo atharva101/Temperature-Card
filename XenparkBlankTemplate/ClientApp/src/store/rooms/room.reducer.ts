@@ -30,7 +30,7 @@ const roomReducer = (
                 status: 'failed',
                 error: action.payload as string
             }
-            case RoomActionTypes.ASSIGN_BATCH_STATUS_INIT:
+        case RoomActionTypes.ASSIGN_BATCH_STATUS_INIT:
             return {
                 ...state,
                 status: 'inprogress',
@@ -71,7 +71,25 @@ const roomReducer = (
                 ...state,
                 status: 'failed',
                 error: action.payload as string
-            }        
+            }
+        case RoomActionTypes.EDIT_BATCHSIZE_INIT:
+            return {
+                ...state,
+                status: 'inprogress',
+                error: ''
+            }
+        case RoomActionTypes.EDIT_BATCHSIZE_SUCCESS:
+            return {
+                ...state,
+                status: 'saved',
+                error: ''
+            }
+        case RoomActionTypes.EDIT_BATCHSIZE_FAILED:
+            return {
+                ...state,
+                status: 'failed',
+                error: action.payload as string
+            }
     }
     return state;
 }
