@@ -32,4 +32,5 @@ export interface RoomLog {
     IsPrev: boolean;
     IsCurrent: boolean;
     IsNext: boolean;
+    UserName: string;
 }

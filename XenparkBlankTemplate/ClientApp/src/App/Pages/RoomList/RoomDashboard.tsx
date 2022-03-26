@@ -49,7 +49,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
             if (tempRoom) {
                 setRoom(tempRoom);
                 console.log(tempRoom)
-                
+
             }
         };
     }, [props.rooms.status]);
@@ -110,8 +110,8 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
         await Promise.all([
             props.changeRoomStatus(room.RoomId, room.BatchId, room.BatchSize, 3, log.RoomStatusId, props.loggedInUser.Id)
-        ]).then(async()=> {if (connection) await connection.send("SendMessage", "RoomStatusChanged")});
-        
+        ]).then(async () => { if (connection) await connection.send("SendMessage", "RoomStatusChanged") });
+
     }
     return (<>
         <FullScreen handle={fullScreenHandle}>
@@ -119,11 +119,11 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                 <Col xl={12} md={12}>
                     <Row>
                         <Col xs={12} sm={12}>
-                            <Card className="m-b-0 bg-c-mint-cream-new" style={{ 'height': '100%' }}>
+                            <Card className="m-b-0 bg-c-mint-cream-new" style={{ 'backgroundColor': 'white' }}>
                                 <Card.Header>
                                     <div className="card-header-left width-40" >
                                         <img src={mylanLogo} alt="" width="120px" />
-
+                                        <span><h4>Mylan Laboratories Limited, Indore</h4></span>
                                     </div>
 
                                     <div className="card-header-right p-3 width-60" style={{ 'cursor': 'pointer', 'display': 'flex', 'justifyContent': 'flex-end' }}>
@@ -187,7 +187,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                     {
                                                         room.BatchSize > 0
                                                             ?
-                                                            <span>{room.BatchSize}  </span>
+                                                            <span>{room.BatchSize} &nbsp; {room.UOM} </span>
                                                             : null
                                                     }
 
@@ -207,7 +207,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.filter(x => x.RoomStatusOrder > 1).map((log: RoomLog) => {
-                                                            return <th style={{ 'fontSize': '22px', 'fontWeight': 'bold', 'background': '#F5FFEA' }}>{log.RoomStatus}</th>
+                                                            return <th style={{ 'fontSize': '22px', 'fontWeight': 'bold', 'background': 'white' }}>{log.RoomStatus}</th>
                                                         })
                                                     }
                                                 </tr>
@@ -217,7 +217,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.filter(x => x.RoomStatusOrder > 1).map((log: RoomLog) => {
-                                                            return <th style={{ 'fontWeight': 'bold', 'background': '#F5FFEA' }} >
+                                                            return <th style={{ 'fontWeight': 'bold', 'background': 'white' }} >
                                                                 Sign / Date
                                                             </th>
                                                         })
@@ -227,7 +227,15 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.filter(x => x.RoomStatusOrder > 1).map((log: RoomLog) => {
-                                                            return <th style={{ 'fontWeight': 'bold', 'background': '#F5FFEA' }} >
+                                                            return <th style={{ 'fontWeight': 'bold', 'background': 'white' }} >
+                                                                {
+                                                                    log.UserName ?
+                                                                        <span>
+                                                                            {
+                                                                                log.UserName + '-'
+                                                                            }
+                                                                        </span> : null
+                                                                }
                                                                 {
                                                                     log.TimeStamp ?
                                                                         <span>
@@ -271,37 +279,24 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                                 return <Col key={log.RoomStatusId} xs={12} sm={3}>
                                                                     <Card onClick={() => changeStatus(log)} style={{ 'cursor': 'pointer' }}>
                                                                         <Card.Body style={{ 'minHeight': '90px' }}>
-                                                                            <Row className="align-items-center">
+                                                                            <Row className="align-items-center" style={{'justifyContent': 'center'}}>
                                                                                 <Col sm={8}>
                                                                                     {
-                                                                                        log.TimeStamp ?
-                                                                                            <>
-                                                                                                <h6 className="text-muted m-b-0">
-                                                                                                    {
-                                                                                                        new Date(log.TimeStamp ?? '').getDate() + '/' +
-                                                                                                        (new Date(log.TimeStamp ?? '').getMonth() + 1) + '/' +
-                                                                                                        new Date(log.TimeStamp ?? '').getFullYear()
-
-
-                                                                                                    }
-                                                                                                </h6>
-                                                                                                <h6 className="text-muted m-b-0">
-                                                                                                    {
-                                                                                                        (new Date(log.TimeStamp ?? '').getHours() + 1) + ':' +
-                                                                                                        (new Date(log.TimeStamp ?? '').getMinutes() + 1) + ':' +
-                                                                                                        (new Date(log.TimeStamp ?? '').getSeconds() + 1)
-                                                                                                    }
-                                                                                                </h6>
-                                                                                            </>
-                                                                                            : null
+                                                                                        log.RoomStatusOrder == 1 ?
+                                                                                        <i className="fas fa-stamp f-32"></i>
+                                                                                        : 
+                                                                                        <i className="fas fa-expand f-32"></i>
                                                                                     }
-
 
                                                                                 </Col>
                                                                             </Row>
                                                                         </Card.Body>
                                                                         <Card.Footer
-                                                                            className = "bg-c-green"
+                                                                            className={`
+                                                            ${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : "bg-c-yellow"
+                                                                                    
+                                                                                }`}
+
                                                                         >
                                                                             <Row className="row align-items-center">
                                                                                 <Col>

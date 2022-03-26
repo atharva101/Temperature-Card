@@ -272,7 +272,7 @@ const TableView = (props: ITableViewProps) => {
                                     return { icon: 'visibility', disable: true, onClick: (event, row) => redirectToRoomDashboard(event, row) }
                                 },
                                 (rowData) => {
-                                    return canAssignBatchToRoom
+                                    return canAssignBatchToRoom && rowData.RoomCurrentStatus != 'Production'
                                         ? { icon: 'assignment_turned_in', disable: false, onClick: (event, rowData) => handleOpen(event, rowData) }
                                         : { icon: '', disable: true, onClick: (rowData) => { } }
                                 },
