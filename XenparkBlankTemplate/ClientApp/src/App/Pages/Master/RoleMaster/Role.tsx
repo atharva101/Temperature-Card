@@ -70,7 +70,7 @@ const Role = (props: IRoleProps) => {
     const deleteDialog = () => {
         confirmAlert({
           title: 'Confirm to Delete',
-          message: 'Are you sure to do this.',
+          message: 'Are you sure you want to delete this item?',
           buttons: [
             {
               label: 'Yes',

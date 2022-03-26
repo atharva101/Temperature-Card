@@ -65,7 +65,7 @@ const UOMMaster = (props: IMasterProps) => {
     const deleteDialog = (Id: number) => {
         confirmAlert({
           title: 'Confirm to Delete',
-          message: 'Are you sure to do this.',
+          message: 'Are you sure you want to delete this item?',
           buttons: [
             {
               label: 'Yes',
