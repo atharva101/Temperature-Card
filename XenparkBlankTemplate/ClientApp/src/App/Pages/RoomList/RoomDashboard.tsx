@@ -7,7 +7,7 @@ import { RoomState, changeRoomStatus, fetchAllRooms, selectRoom, fetchRoomByDevi
 import { connect, useDispatch } from 'react-redux';
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { IPermission } from '../../../models/role';
-import mylanLogo from '../../../assets/images/mylan-logo.svg';
+import mylanLogod from '../../../assets/images/mylan.png';
 
 interface IRoomDashboardProps {
     rooms: RoomState;
@@ -39,7 +39,12 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
     useEffect(() => {
         if (props.loggedInUser.RoleId == -1) {
-            dispatch(fetchRoomByDeviceIP());
+            const interval = setInterval(() => {
+                dispatch(fetchRoomByDeviceIP())
+                console.log('This will be called every 5 seconds');
+            }, 10000);
+            
+            return () => clearInterval(interval);
         }
     }, [])
 
@@ -122,8 +127,9 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                             <Card className="m-b-0 bg-c-mint-cream-new" style={{ 'backgroundColor': 'white' }}>
                                 <Card.Header>
                                     <div className="card-header-left width-40" >
-                                        <img src={mylanLogo} alt="" width="120px" />
+                                        <img src={mylanLogod} alt="" width="50px" height="50px" />
                                         <span><h4>Mylan Laboratories Limited, Indore</h4></span>
+                                        
                                     </div>
 
                                     <div className="card-header-right p-3 width-60" style={{ 'cursor': 'pointer', 'display': 'flex', 'justifyContent': 'flex-end' }}>
@@ -177,7 +183,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                             </tr>
                                             <tr>
                                                 <td >Batch Number</td>
-                                                <td className="font-color" style={{ 'fontSize': '40px', 'fontWeight': 'bold' }}>
+                                                <td className="font-color" style={{ 'fontSize': '20px', 'fontWeight': 'bold' }}>
                                                     <span>{room.BatchNumber}  </span>
                                                 </td>
                                             </tr>
@@ -187,7 +193,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                     {
                                                         room.BatchSize > 0
                                                             ?
-                                                            <span>{room.BatchSize} &nbsp; {room.UOM} </span>
+                                                            <span>{room.BatchSize}&nbsp;{room.UOM} </span>
                                                             : null
                                                     }
 
@@ -228,11 +234,11 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.filter(x => x.RoomStatusOrder > 1).map((log: RoomLog) => {
                                                             return <th style={{ 'fontWeight': 'bold', 'background': 'white' }} >
-                                                                {
+                                                               {
                                                                     log.UserName ?
                                                                         <span>
                                                                             {
-                                                                                log.UserName + '-'
+                                                                                log.UserName + ' / '
                                                                             }
                                                                         </span> : null
                                                                 }
@@ -240,8 +246,8 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                                     log.TimeStamp ?
                                                                         <span>
                                                                             {
-                                                                                new Date(log.TimeStamp ?? '').getDate() + '/' +
-                                                                                (new Date(log.TimeStamp ?? '').getMonth() + 1) + '/' +
+                                                                                new Date(log.TimeStamp ?? '').getDate() + '-' +
+                                                                                (new Date(log.TimeStamp ?? '').getMonth() + 1) + '-' +
                                                                                 new Date(log.TimeStamp ?? '').getFullYear()
                                                                             }
                                                                         </span> : null
@@ -250,13 +256,13 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                         })
                                                     }
                                                 </tr>
-
+                                             
                                             </tbody>
                                         </Table>
                                     </Row>
                                 </Card.Body>
-                                <Card.Footer>
-                                    <Row className='p-10 font-bold'>
+                                <Card.Footer> 
+                                    <Row className='p-10 font-bold' >
                                         <Col xs={4} sm={4} className="text-left" >Reference:{room.ReferenceNumber}</Col>
                                         <Col xs={4} sm={4} className="text-center">Form:{room.FormNumber}</Col>
                                         <Col xs={4} sm={4} className="text-right" >Version:{room.VersionNumber}</Col>

@@ -253,32 +253,66 @@ const TableView = (props: ITableViewProps) => {
                         <MaterialTable
                             title=""
                             columns={[
-                                { title: 'Room No.', field: 'RoomCode' },
-                                { title: 'Description', field: 'RoomDesc' },
+                                { title: 'Room #', field: 'RoomCode',
+                            
+                                 cellStyle: {
+                                    minWidth: 100,
+                                    maxWidth: 100
+                                  }
+                            
+                            },
+                                { title: 'Description', field: 'RoomDesc' ,
+                            
+                                cellStyle: {
+                                   minWidth: 100,
+                                   maxWidth: 100
+                                 }},
                                 {
                                     title: 'Product', field: 'ProductCode',
+                            
+                                    // cellStyle: {
+                                    //    minWidth: 140,
+                                    //    maxWidth: 140
+                                    //  },
+                                     width:'100%',
                                     render: rowData => rowData.ProductCode + (rowData.ProductDesc ? ' - ' : '') + rowData.ProductDesc
                                 },
-                                { title: 'Batch', field: 'BatchNumber' },
+                                { title: 'Batch', field: 'BatchNumber' ,
+                            
+                                cellStyle: {
+                                   minWidth: 90,
+                                   maxWidth: 90
+                                 }},
                                 {
                                     title: 'Size', field: 'BatchSize',
+                            
+                                    cellStyle: {
+                                       minWidth: 100,
+                                       maxWidth: 100
+                                     },
                                     render: rowData => rowData.BatchSize > 0 ? rowData.BatchSize.toString() + ' ' + rowData.UOM.toString() : ''
                                 },
-                                { title: 'Status', field: 'RoomCurrentStatus' }
+                                { title: 'Status', field: 'RoomCurrentStatus' ,
+                            
+                                cellStyle: {
+                                   minWidth: 140,
+                                   maxWidth: 140
+                                 } }
                             ]}
                             data={rooms ? rooms : [] as IRoom[]}
                             actions={[
                                 (rowData) => {
-                                    return { icon: 'visibility', disable: true, onClick: (event, row) => redirectToRoomDashboard(event, row) }
+                                    
+                                    return { icon: 'visibility', disable: true, tooltip:'Change Status', onClick: (event, row) => redirectToRoomDashboard(event, row) }
                                 },
                                 (rowData) => {
                                     return canAssignBatchToRoom && rowData.RoomCurrentStatus != 'Production'
-                                        ? { icon: 'assignment_turned_in', disable: false, onClick: (event, rowData) => handleOpen(event, rowData) }
+                                        ? { icon: 'assignment_turned_in', disable: false,  tooltip:'Assign Batch', onClick: (event, rowData) => handleOpen(event, rowData) }
                                         : { icon: '', disable: true, onClick: (rowData) => { } }
                                 },
                                 (rowData) => {
                                     return canAssignBatchToRoom
-                                        ? { icon: 'edit', disable: false, onClick: (event, row) => handleOpenBatchSize(event, row) }
+                                        ? { icon: 'edit', disable: false, tooltip:'Edit Batch Size', onClick: (event, row) => handleOpenBatchSize(event, row) }
                                         : { icon: '', disable: true, onClick: (rowData) => { } }
                                 }
                             ]}
@@ -305,21 +339,26 @@ const TableView = (props: ITableViewProps) => {
                                 {
                                     title: 'Batch #', field: 'BatchNumber',
                                     cellStyle: {
-                                        minWidth: 150
-                                    },
+                                        minWidth: 90,
+                                        maxWidth: 90
+                                      },
                                 },
 
                                 {
                                     title: 'Batch Size', field: 'BatchSize',
                                     cellStyle: {
-                                        minWidth: 150
-                                    },
+                                        minWidth: 100,
+                                        maxWidth: 100
+                                      },
                                     render: rowData => rowData.BatchSize && rowData.BatchSize > 0 ? rowData.BatchSize.toString() + ' ' + rowData.UOM.toString() : ''
                                 },
                                 {
                                     title: 'Product',
                                     field: 'ProductId',
-
+                                    cellStyle: {
+                                        minWidth: 400,
+                                        maxWidth: 400
+                                      },
                                     lookup: props.products.reduce(function (acc: any, cur: IProduct, i: number) {
                                         acc[cur.Id] = cur.Code + ' - ' + cur.Description;
                                         return acc;
@@ -328,6 +367,10 @@ const TableView = (props: ITableViewProps) => {
                                 {
                                     title: 'Assign',
                                     field: 'Id',
+                                    cellStyle: {
+                                        minWidth: 50,
+                                        maxWidth: 50
+                                      },
                                     render: rowData => <Button size="sm" onClick={() => assignBatchToRoom(rowData)} color="danger">Assign</Button>
                                 },
                             ]}
