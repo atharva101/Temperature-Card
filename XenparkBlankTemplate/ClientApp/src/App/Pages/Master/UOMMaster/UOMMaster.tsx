@@ -84,11 +84,11 @@ const UOMMaster = (props: IMasterProps) => {
             <Col>
                 <Card>
                     <Card.Header>
-                        <Card.Title as="h5">Unit Of Measure</Card.Title>
+                        <Card.Title as="h5">Unit Of Measurement</Card.Title>
                         <div className="card-header-right p-1" style={{ 'cursor': 'pointer' }}>
                             {canAddEdit ?
                                 <Button variant="success" className="btn-sm btn-round has-ripple" onClick={() => redirectToMaintainUser(-1)}>
-                                    <i className="feather icon-plus" /> Add Unit Of Measure
+                                    <i className="feather icon-plus" /> Add Unit Of Measurement
                                 </Button>
                                 : null
                             }

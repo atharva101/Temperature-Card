@@ -93,12 +93,12 @@ const MaintainRoomMaster = (props: IMaintainMasterProps) => {
                             <Form.Row>
                                 <Form.Group as={Col} md="6" >
                                     <Form.Label>
-                                        Code
+                                        Number
                                     </Form.Label>
                                     <Form.Control
                                         required
                                         type="text"
-                                        placeholder="Code"
+                                        placeholder="Number"
                                         name="Code"
                                         defaultValue={master.Code}
                                         onChange={handleInputChanges}
