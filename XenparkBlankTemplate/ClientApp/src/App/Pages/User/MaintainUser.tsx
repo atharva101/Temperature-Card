@@ -150,10 +150,14 @@ const MaintainUser = (props: IMaintainUserProps) => {
                                             <select value={user.RoleId ?? -1} className="form-control" name="RoleId"
                                                 onChange={handleSelectChanges}>
                                                 <option value="">--Select--</option>
-                                                <option value="1">Manager</option>
-                                                <option value="2">Supervisor</option>
-                                                <option value="3">Operator</option>
-                                                <option value="4">Admin</option>
+                                                {
+                                                    props.roles && props.roles.map((x, i) => {
+                                                        return <option key={i} value={x.Id}>
+                                                            {x.Name}
+                                                        </option>
+                                                    })
+                                                }
+
                                             </select>
                                             <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
                                         </Form.Group>
