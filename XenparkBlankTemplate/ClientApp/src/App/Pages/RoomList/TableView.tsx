@@ -498,7 +498,7 @@ const TableView = (props: ITableViewProps) => {
                                     .map((x, i) => {
                                         return <option key={i} value={x}>
                                             {
-                                                roomMaster.filter(p => p.BlockId === x)[0].BlockCode
+                                                roomMaster.filter(p => p.BlockId === x)[0].BlockDescription
                                             }
                                         </option>
                                     })
@@ -519,7 +519,7 @@ const TableView = (props: ITableViewProps) => {
                                     .map((x, i) => {
                                         return <option key={i} value={x}>
                                             {
-                                                roomMaster.filter(p => p.AreaId === x)[0].AreaCode
+                                                roomMaster.filter(p => p.AreaId === x)[0].AreaDescription
                                             }
                                         </option>
                                     })

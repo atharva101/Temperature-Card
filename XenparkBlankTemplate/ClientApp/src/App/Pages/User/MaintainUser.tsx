@@ -43,18 +43,53 @@ const MaintainUser = (props: IMaintainUserProps) => {
             setIsEdit(true);
             const tempUser = props.users.users.find(x => x.Id === props.users.selectedUserId);
             if (tempUser) {
-                setUser(tempUser);
+                setUser(JSON.parse(JSON.stringify(tempUser)));
                 if (tempUser.UserRooms) {
-                    setUserRooms(tempUser.UserRooms)
+                    setUserRooms(JSON.parse(JSON.stringify(tempUser.UserRooms)))
+
                 }
             }
         }
         else setIsEdit(false);
-    }, [props.users.selectedUserId, props.users.users]);
+    }, [props.users.selectedUserId, JSON.stringify(props.users.users)]);
 
     useEffect(() => {
         setRoomMasters(props.roomMaster);
     }, [props.roomMaster]);
+
+    useEffect(() => {
+        if (userRooms && userRooms.length > 0 && roomMaster && roomMaster.length > 0) {
+            let defaultAreaId: number[] = [];
+            userRooms.forEach(room => {
+                const area = roomMaster.find(x => x.RoomId === room.RoomId);
+                if (area) {
+                    const areaRooms = roomMaster.filter(x => x.AreaId === area?.AreaId).map(x => x.RoomId);
+                    let allRoomsExists = true;
+                    areaRooms.forEach(element => {
+                        if (userRooms.findIndex(x => x.RoomId === element) < 0) {
+                            allRoomsExists = false;
+                        }
+                    });
+                    if (allRoomsExists) {
+                        defaultAreaId.push(area.AreaId);
+                    }
+                }
+            });
+            if (defaultAreaId.length > 0) {
+                setCheckedAreaList(defaultAreaId);
+            }
+            const temp = roomMaster.find(x => x.RoomId === userRooms[0].RoomId);
+            if (temp) {
+                setPlantId(temp.PlantId);
+                setBlockId(temp.BlockId);
+            }
+
+        }
+    }, [JSON.stringify(userRooms), JSON.stringify(roomMaster)]);
+
+    useEffect(() => {
+        console.log(user);
+    }, [user]);
 
     useEffect(() => {
         if (props.users.status === 'saved')
@@ -71,7 +106,10 @@ const MaintainUser = (props: IMaintainUserProps) => {
             event.stopPropagation();
         }
         setValidated(true);
-        dispatch(saveUser(user));
+
+        const tempUser = user;
+        if (userRooms) tempUser.UserRooms = userRooms;
+        dispatch(saveUser(tempUser));
 
     };
 
@@ -104,17 +142,30 @@ const MaintainUser = (props: IMaintainUserProps) => {
         if (name.indexOf('area') >= 0) {
             //Deepak Area Checked
             const tempAreaIndex = checkedAreaList.findIndex(x => x === parseInt(value));
+            let tempCheckedAreaList: number[] = [];
             if (e.target.checked == true) {
                 if (tempAreaIndex < 0) {
-                    // add area to checked area list                    
-                    setCheckedAreaList([...checkedAreaList, parseInt(value)]);
+                    // add area to checked area list  
+                    tempCheckedAreaList = [...checkedAreaList, parseInt(value)]
+                    setCheckedAreaList(tempCheckedAreaList);
                 }
             } else {
                 //remove area from checkedAreaList
                 if (tempAreaIndex >= 0) {
-                    setCheckedAreaList(checkedAreaList.filter(x => x !== parseInt(value)));
+                    tempCheckedAreaList = checkedAreaList.filter(x => x !== parseInt(value));
+                    setCheckedAreaList(tempCheckedAreaList);
                 }
             }
+            //SET ROOMS
+                let tempUserRooms = userRooms as IUserRoom[];
+                tempCheckedAreaList.forEach(areaId => {
+                    roomMaster.filter(x => x.PlantId === plantId && x.BlockId === blockId && x.AreaId === areaId).forEach(room => {
+                        if (userRooms.findIndex(x => x.RoomId === room.RoomId) < 0) {
+                            tempUserRooms = [...tempUserRooms, { Id: 0, RoomId: room.RoomId, UserId: user.Id }];
+                        }
+                    });
+                });
+                setUserRooms(tempUserRooms);
         }
         else if (name.indexOf('room') >= 0) {
             const tempRoomIndex = userRooms.findIndex(x => x.RoomId === parseInt(value));
@@ -150,29 +201,18 @@ const MaintainUser = (props: IMaintainUserProps) => {
         setAreaList(tmpAreaList);
     }, [blockId, plantId]);
 
-    useEffect(() => {
-        let tempUserRooms = userRooms as IUserRoom[];
-        checkedAreaList.forEach(areaId => {
-            roomMaster.filter(x => x.PlantId === plantId && x.BlockId === blockId && x.AreaId === areaId).forEach(room => {
-                if (userRooms.findIndex(x => x.RoomId === room.RoomId) < 0) {
-                    tempUserRooms = [...tempUserRooms, { Id: 0, RoomId: room.RoomId, UserId: user.Id }];
-                }
-            });
-        });
-        setUserRooms(tempUserRooms);
-    }, [checkedAreaList]);
+    // useEffect(() => {
+    //     let tempUserRooms = userRooms as IUserRoom[];
+    //     checkedAreaList.forEach(areaId => {
+    //         roomMaster.filter(x => x.PlantId === plantId && x.BlockId === blockId && x.AreaId === areaId).forEach(room => {
+    //             if (userRooms.findIndex(x => x.RoomId === room.RoomId) < 0) {
+    //                 tempUserRooms = [...tempUserRooms, { Id: 0, RoomId: room.RoomId, UserId: user.Id }];
+    //             }
+    //         });
+    //     });
+    //     setUserRooms(tempUserRooms);
+    // }, [checkedAreaList]);
 
-    useEffect(() => {
-        console.log('test');
-        console.log(user);
-        // const tempUser = user;
-        // tempUser.UserRooms = userRooms;
-        // console.log('test');
-        // console.log(tempUser);
-        // console.log(tempUser.UserRooms);
-        // setUser(tempUser);
-
-    }, [userRooms]);
 
     const redirectToUserList = () => {
         dispatch(selectUser(-1));
