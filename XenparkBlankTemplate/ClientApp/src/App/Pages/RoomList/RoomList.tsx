@@ -41,7 +41,7 @@ const RoomList = (props: IRoomProps) => {
             <Col>
                 <Card>
                     <Card.Header>
-                        <Card.Title as="h5">Room List</Card.Title>
+                        <Card.Title as="h5">Room Status</Card.Title>
                         <div className="card-header-right p-3" style={{ 'cursor': 'pointer' }}>
                             {isTileView ?
 

@@ -76,7 +76,7 @@ const Batch = (props: IBatchProps) => {
     const deleteDialog = (complete: boolean = false) => {
         confirmAlert({
           title: 'Confirm to Delete',
-          message: complete? 'Are you sure you want to Mark Complete? This will delete all records associated to the selected batch.' : 'Are you sure you want to delete this item?',
+          message: complete? 'Are you sure you want to Mark Complete this batch? Click Yes will delete all records associated to the selected batch.' : 'Are you sure?',
           buttons: [
             {
               label: 'Yes',
@@ -131,15 +131,15 @@ const Batch = (props: IBatchProps) => {
                                     :
                                     null
                             }
-                            {
+                            {/* {
                                 canAddEdit ?
                                     <Button size="sm" variant="danger" className="btn-sm btn-round has-ripple" onClick={handleShowModal}>
                                         <i className="feather icon-plus" /> Complete Batch
                                     </Button>
                                     :
                                     null
-                            }
-                            <Modal show={showModal} onHide={handleCloseModal}>
+                            } */}
+                            {/* <Modal show={showModal} onHide={handleCloseModal}>
                                 <Modal.Header closeButton>
                                     <Modal.Title>Complete Batch</Modal.Title>
                                 </Modal.Header>
@@ -156,7 +156,7 @@ const Batch = (props: IBatchProps) => {
                                         Yes
                                     </Button>
                                 </Modal.Footer>
-                            </Modal>
+                            </Modal> */}
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -174,25 +174,32 @@ const Batch = (props: IBatchProps) => {
                                 <Spinner animation="border" variant="primary" />
                                 :
                                 <MaterialTable
-                                    title=""
+                                  title=""
+
+                                 
+
                                     columns={[
                                         {
-                                            title: 'Batch #', field: 'BatchNumber',
-                                            cellStyle: {
-                                                maxWidth: 200
-                                            },
+                                            title: 'Batch #', field: 'BatchNumber', cellStyle: {
+                                                minWidth: 135,
+                                                maxWidth: 135
+                                              }
+                                           
                                         },
 
                                         {
-                                            title: 'Batch Size', field: 'BatchSize',
-                                            cellStyle: {
-                                                maxWidth: 250
-                                            },
+                                            title: 'Batch Size', field: 'BatchSize', cellStyle: {
+                                                minWidth: 135,
+                                                maxWidth: 135
+                                              },
+                                           
                                             render: rowData => rowData.BatchSize && rowData.BatchSize > 0 ? rowData.BatchSize.toString() + ' ' + rowData.UOM.toString() : ''
                                         },
                                         {
                                             title: 'Product',
                                             field: 'ProductId',
+                                            width:'90%',
+                                            
                                             lookup: props.products.reduce(function (acc: any, cur: IProduct, i: number) {
                                                 acc[cur.Id] = cur.Code + ' - ' + cur.Description;
                                                 return acc;
