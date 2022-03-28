@@ -1,4 +1,3 @@
-import userEvent from '@testing-library/user-event';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Row, Col, Card, Table, Alert, Spinner, Form, Button } from 'react-bootstrap';
@@ -16,7 +15,6 @@ interface IMaintainMasterProps {
     fetchParentData: any
 }
 const MaintainProductMaster = (props: IMaintainMasterProps) => {
-
     const [errors, setErrors] = useState([] as string[]);
     const [isEdit, setIsEdit] = useState(false);
     const location = useLocation();
@@ -153,7 +151,7 @@ const MaintainProductMaster = (props: IMaintainMasterProps) => {
                                     <select value={master.ParentId ?? -1} name="ParentId"
                                         onChange={handleSelectChanges} required
                                         className={
-                                            hasError("Description")
+                                            hasError("UOM")
                                                 ? "form-control is-invalid"
                                                 : "form-control"
                                         }>
@@ -165,7 +163,7 @@ const MaintainProductMaster = (props: IMaintainMasterProps) => {
                                         }
 
                                     </select>
-                                    <div className={hasError("Description") ? "invalid-feedback" : "hidden"}>
+                                    <div className={hasError("UOM") ? "invalid-feedback" : "hidden"}>
                                         Required Field
                                     </div>
                                 </Form.Group>
