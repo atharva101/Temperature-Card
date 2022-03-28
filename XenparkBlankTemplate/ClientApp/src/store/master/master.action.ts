@@ -142,7 +142,7 @@ export const deleteMaster = (type: string, id: number) => (dispatch: DispatchMas
             else {
                 dispatch({
                     type: MasterActionTypes.DELETE_MASTER_FAILED,
-                    payload: res,
+                    payload: 'Something went wrong. Please try again.',
                 });
             }
             
