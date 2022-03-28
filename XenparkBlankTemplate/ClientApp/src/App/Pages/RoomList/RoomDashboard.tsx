@@ -28,12 +28,22 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
     const [canAssignBatchToRoom, setCanAssignBatchToRoom] = useState(false);
     const [canChangeBatchStatus, setCanChangeBatchStatus] = useState(false);
+
+    const [canChangStatusProduction, setCanChangStatusProduction] = useState(false);
+    const [canChangStatusCleaning, setCanChangStatusCleaning] = useState(false);
+    const [canChangStatusMaintainance, setCanChangStatusMaintainance] = useState(false);
+
+
+
     const [roomId, setRoomId] = useState(0);
     const dispatch = useDispatch();
     useEffect(() => {
         if (props.permissions && props.permissions.length > 0) {
             setCanAssignBatchToRoom(props.permissions.filter(x => x.PermissionName === 'Assign Batch to Room').length > 0 ? true : false);
             setCanChangeBatchStatus(props.permissions.filter(x => x.PermissionName === 'Change Batch Status').length > 0 ? true : false);
+            setCanChangStatusProduction(props.permissions.filter(x => x.PermissionName === 'Production').length > 0 ? true : false);
+            setCanChangStatusCleaning(props.permissions.filter(x => x.PermissionName === 'Cleaning').length > 0 ? true : false);
+            setCanChangStatusMaintainance(props.permissions.filter(x => x.PermissionName === 'Maintenance').length > 0 ? true : false);
         }
     }, [props.permissions]);
 
@@ -43,7 +53,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                 dispatch(fetchRoomByDeviceIP())
                 console.log('This will be called every 5 seconds');
             }, 5000);
-            
+
             return () => clearInterval(interval);
         }
     }, [])
@@ -112,11 +122,13 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
     }, [connection]);
 
     const changeStatus = async (log: RoomLog) => {
-
-        await Promise.all([
-            props.changeRoomStatus(room.RoomId, room.BatchId, room.BatchSize, room.UOM, log.RoomStatusId, props.loggedInUser.Id)
-        ]).then(async () => { if (connection) await connection.send("SendMessage", "RoomStatusChanged") });
-
+        if ((log.RoomStatus == 'Production' && canChangStatusProduction) ||
+            (log.RoomStatus == 'Cleaning' && canChangStatusCleaning) ||
+            (log.RoomStatus == 'Maintenance' && canChangStatusMaintainance)) {
+            await Promise.all([
+                props.changeRoomStatus(room.RoomId, room.BatchId, room.BatchSize, room.UOM, log.RoomStatusId, props.loggedInUser.Id)
+            ]).then(async () => { if (connection) await connection.send("SendMessage", "RoomStatusChanged") });
+        }
     }
     return (<>
         <FullScreen handle={fullScreenHandle}>
@@ -282,29 +294,37 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                             room.RoomLogs && room.RoomLogs.length > 0 &&
                                                             room.RoomLogs.map((log: RoomLog) => {
                                                                 return <Col key={log.RoomStatusId} xs={12} sm={3}>
-                                                                    <Card onClick={() => changeStatus(log)} style={{ 'cursor': 'pointer' }}>
-                                                                        <Card.Body style={{ 'minHeight': '90px' }}>
-                                                                            <Row className="align-items-center" style={{'justifyContent': 'center'}}>
-                                                                                <Col sm={8}>
+                                                                    {
+                                                                        ((log.RoomStatus == 'Production' && canChangStatusProduction) ||
+                                                                            (log.RoomStatus == 'Cleaning' && canChangStatusCleaning) ||
+                                                                            (log.RoomStatus == 'Maintenance' && canChangStatusMaintainance)) ?
+                                                                            <Card onClick={() => changeStatus(log)} style={{ 'cursor': 'pointer' }}>
+                                                                                <Card.Body style={{ 'minHeight': '90px' }}>
+                                                                                    <Row className="align-items-center" style={{ 'justifyContent': 'center' }}>
+                                                                                        <Col sm={8}>
 
 
-                                                                                </Col>
-                                                                            </Row>
-                                                                        </Card.Body>
-                                                                        <Card.Footer
-                                                                            className={`
+                                                                                        </Col>
+                                                                                    </Row>
+                                                                                </Card.Body>
+                                                                                <Card.Footer
+                                                                                    className={`
                                                             ${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : "bg-c-yellow"
-                                                                                    
-                                                                                }`}
 
-                                                                        >
-                                                                            <Row className="row align-items-center">
-                                                                                <Col>
-                                                                                    <h6 className="text-white m-b-0">{log.RoomStatus}</h6>
-                                                                                </Col>
-                                                                            </Row>
-                                                                        </Card.Footer>
-                                                                    </Card>
+                                                                                        }`}
+
+                                                                                >
+                                                                                    <Row className="row align-items-center">
+                                                                                        <Col>
+                                                                                            <h6 className="text-white m-b-0">{log.RoomStatus}</h6>
+                                                                                        </Col>
+                                                                                    </Row>
+                                                                                </Card.Footer>
+                                                                            </Card>
+                                                                            : null
+
+                                                                    }
+
                                                                 </Col>
                                                             })}
                                                     </Row>
