@@ -1,3 +1,4 @@
+import userEvent from '@testing-library/user-event';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Row, Col, Card, Table, Alert, Spinner, Form, Button } from 'react-bootstrap';
@@ -15,6 +16,8 @@ interface IMaintainMasterProps {
     fetchParentData: any
 }
 const MaintainProductMaster = (props: IMaintainMasterProps) => {
+
+    const [errors, setErrors] = useState([] as string[]);
     const [isEdit, setIsEdit] = useState(false);
     const location = useLocation();
     const [master, setMaster] = useState({} as IMaster);
@@ -35,22 +38,29 @@ const MaintainProductMaster = (props: IMaintainMasterProps) => {
         props.fetchParentData('uom', true);
     }, []);
 
+    const hasError = (key: string) => {
+        return errors.indexOf(key) !== -1;
+    }
     const [validated, setValidated] = useState(false);
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
+    const handleSubmit = () => {
 
-            event.stopPropagation();
+        let objError = [] as string[];
+        if (!master.Code || master.Code.length < 1) {
+            objError.push('Code');
         }
-        if(master.ParentId == null || master.ParentId < 1){
-            setValidated(false)
+        if (!master.Description || master.Description.length < 1) {
+            objError.push('Description');
         }
-        else{
-            setValidated(true);
+        if (!master.ParentId || master.ParentId < 1) {
+            objError.push('UOM');
+        }
+        setErrors(objError);
+
+        if (objError.length === 0) {
             props.saveMaster('product', master)
-        }        
+        }
     };
+
 
     useEffect(() => {
         if (props.master.status === 'saved') {
@@ -93,7 +103,7 @@ const MaintainProductMaster = (props: IMaintainMasterProps) => {
                                 </Alert>
                                 : null
                         }
-                        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                        <Form noValidate >
                             <Form.Row>
                                 <Form.Group as={Col} md="6" >
                                     <Form.Label>
@@ -106,8 +116,15 @@ const MaintainProductMaster = (props: IMaintainMasterProps) => {
                                         name="Code"
                                         defaultValue={master.Code}
                                         onChange={handleInputChanges}
+                                        className={
+                                            hasError("Code")
+                                                ? "is-invalid"
+                                                : ""
+                                        }
                                     />
-                                    <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                    <div className={hasError("Code") ? "invalid-feedback" : "hidden"}>
+                                        Required Field
+                                    </div>
                                 </Form.Group>
                                 <Form.Group as={Col} md="12">
                                     <Form.Label>
@@ -121,13 +138,25 @@ const MaintainProductMaster = (props: IMaintainMasterProps) => {
                                         name="Description"
                                         defaultValue={master.Description}
                                         onChange={handleInputChanges}
+                                        className={
+                                            hasError("Description")
+                                                ? "is-invalid"
+                                                : ""
+                                        }
                                     />
-                                    <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                    <div className={hasError("Description") ? "invalid-feedback" : "hidden"}>
+                                        Required Field
+                                    </div>
                                 </Form.Group>
                                 <Form.Group as={Col} md="6">
                                     <Form.Label>Unit of Measurement</Form.Label>
-                                    <select value={master.ParentId ?? -1} className="form-control" name="ParentId"
-                                        onChange={handleSelectChanges} required>
+                                    <select value={master.ParentId ?? -1} name="ParentId"
+                                        onChange={handleSelectChanges} required
+                                        className={
+                                            hasError("Description")
+                                                ? "form-control is-invalid"
+                                                : "form-control"
+                                        }>
                                         <option value="">Select Unit of Measurement</option>
                                         {
                                             props.master.parentData.map((p, index) => {
@@ -136,16 +165,20 @@ const MaintainProductMaster = (props: IMaintainMasterProps) => {
                                         }
 
                                     </select>
-                                    <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                    <div className={hasError("Description") ? "invalid-feedback" : "hidden"}>
+                                        Required Field
+                                    </div>
                                 </Form.Group>
 
                             </Form.Row>
 
                             {
                                 props.master.status === 'inprogress' ?
-                                    <Button type="submit" disabled={true}>Saving...</Button>
+                                    <Button variant="primary" className="btn-sm btn-round has-ripple" disabled={true}>Saving...</Button>
                                     :
-                                    <Button type="submit">Submit form</Button>
+                                    <Button variant="primary" className="btn-sm btn-round has-ripple" onClick={() => handleSubmit()}>
+                                        Submit
+                                    </Button>
                             }
                         </Form>
                     </Card.Body>
