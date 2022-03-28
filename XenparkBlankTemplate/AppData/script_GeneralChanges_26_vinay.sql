@@ -254,5 +254,146 @@ BEGIN
      END           
    END            
    RETURN @ReturnValue            
-END     
+END 
+GO 
+   
+     
+   
+     
+ALTER Procedure [dbo].[sprocGetRoomStatus]                    
+@RoomId INT  = -1                  
+AS                    
+BEGIN                    
+                   
+CREATE TABLE #Rooms                    
+(                    
+  RoomId   int,      
+  RoomCode       varchar(200),      
+  RoomDesc   varchar(200),      
+  ProductId      int,      
+  ProductCode  varchar(200),      
+  ProductDesc  varchar(2000),      
+  BatchId   int,      
+  BatchNumber    varchar(200),      
+  BatchSize      int,  
+  UOM            VARCHAR(50),  
+  RoomStatusId   int,      
+  RoomCurrentStatus     varchar(200),      
+  RoomStatusOrder int,      
+  [TimeStamp]  DATETIME,    
+  Plant varchar(200),    
+  Block varchar(200) ,    
+  Area varchar(200),  
+  ReferenceNumber varchar(200),  
+  FormNumber varchar(200),  
+  VersionNumber varchar(200),  
+)              
+     
+CREATE TABLE #RoomLog                  
+(                  
+  RoomId   int,    
+  RoomStatusId   int,    
+  RoomStatus     varchar(200),    
+  RoomStatusOrder int  ,    
+  [TimeStamp]  DATETIME,
+   BatchId     INT,
+   [BatchSize]  INT,
+   UOM          VARCHAR(200),
+   UserName     VARCHAR(200)
+)    
+     
+INSERT INTO #Rooms (RoomId      
+  ,RoomCode      
+  ,RoomDesc    
+  ,Plant    
+  ,Block    
+  ,Area  
+  ,FormNumber  
+  ,ReferenceNumber  
+  ,VersionNumber)      
+  SELECT R.Id,R.Code,R.Description, P.PlantName,    
+  B.Code + (CASE WHEN ISNULL(B.Description, '') <> '' THEN '-' ELSE '' END) + B.Description,    
+  A.Code + (CASE WHEN ISNULL(A.Description, '') <> '' THEN '-' ELSE '' END) + A.Description,  
+  B.FormNumber,  
+  B.ReferenceNumber,  
+  B.VersionNumber    
+  FROM Room R    
+  INNER JOIN Area A ON A.Id = R.AreaId    
+  INNER JOIN Block B ON B.Id = A.BlockId    
+  INNER JOIN Plant P ON P.Id = B.PlantId    
+  WHERE R.Id = CASE WHEN @RoomId > 0 THEN @RoomId ELSE R.Id END    
+  AND R.Approved = 1    
+   
+UPDATE TR  SET    
+TR.RoomStatusId = RL.StatusId,      
+TR.RoomCurrentStatus = SWF.[Status],    
+TR.RoomStatusOrder = SWF.[Order],    
+TR.[TimeStamp] = RL.[TimeStamp]      
+FROM #Rooms TR    
+INNER JOIN dbo.RoomLog RL ON RL.RoomId = TR.RoomId    
+INNER JOIN (      
+   SELECT max(Id) as Id FROM RoomLog RLSub
+   Group By RoomId      
+   ) RLTop ON RLTop.Id = RL.Id      
+INNER JOIN dbo.Room R ON RL.RoomId = R.Id      
+INNER JOIN dbo.StatusWorkFlow SWF ON SWF.Id = RL.StatusId
+ 
+-----------------------TODO
+UPDATE temp      
+SET ProductId  =  B.ProductId        
+  ,ProductCode =  P.Code        
+  ,ProductDesc = P.Description      
+  ,BatchId    = B.Id      
+  ,BatchNumber = B.BatchNumber        
+  ,BatchSize  = RL.BatchSize  
+  ,UOM = uom.Description  
+FROM #Rooms temp
+INNER JOIN RoomLog RL ON temp.RoomId = RL.RoomId 
+INNER JOIN (      
+   SELECT max(Id) as Id FROM RoomLog RLSub
+   Group By RoomId      
+   ) RLTop ON RLTop.Id = RL.Id
+INNER JOIN dbo.Batch B On B.Id = RL.BatchId      
+INNER JOIN dbo.mylan_ProductMaster P ON P.Id = B.ProductId  
+LEFT JOIN mylan_UnitOfMeasure uom ON uom.Id = RL.UOM  
+INNER JOIN dbo.StatusWorkFlow W ON W.Id = temp.RoomStatusId    
+                                    AND (W.ProductProcessing = 1 OR W.[Order] =1)    
   
+-----------------------TODO
+     
+   
+INSERT INTO #RoomLog (    
+   RoomId      
+  ,RoomStatusId    
+  ,RoomStatus        
+  ,RoomStatusOrder   
+  )    
+Select R.RoomId, SWF.Id, SWF.Status, SWF.[Order] FROM #Rooms R    
+CROSS JOIN StatusWorkFlow SWF
+
+DECLARE @AssignedBatchId INT  
+SELECT TOP 1 @AssignedBatchId = rl.BatchId FROM RoomLog rl
+INNER JOIN #Rooms r ON r.RoomId = rl.RoomId order by Id desc 
+   
+UPDATE tempRL    
+SET tempRL.[TimeStamp] = RL.TimeStamp,    
+    tempRL.UserName = U.FirstName + ' '+ U.LastName    
+FROM #RoomLog tempRL    
+INNER JOIN dbo.RoomLog RL ON RL.RoomId = tempRL.RoomId AND RL.StatusId = tempRL.RoomStatusId 
+INNER JOIN [User] U ON U.Id = RL.UserId
+INNER JOIN (    
+  SELECT MAX(Id) as Id    
+  FROM dbo.RoomLog    
+  Group by roomId, StatusId    
+) RLTop ON RL.Id = RLTop.Id 
+WHERE RL.BatchId = @AssignedBatchId     
+   
+     
+SELECT * FROM #Rooms R ORDER BY RoomId asc, [TimeStamp] desc    
+SELECT * FROM #RoomLog ORDER BY RoomId, RoomStatusOrder      
+     
+DROP Table #Rooms                    
+DROP Table #RoomLog                
+               
+END      
+GO 

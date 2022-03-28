@@ -164,7 +164,7 @@ namespace XenparkBlankTemplate.Controllers
         }
 
         [HttpGet]
-        public int ChangeRoomStatus(int roomId,int batchId, int batchSize, int uom, int statusId, int userId)
+        public int ChangeRoomStatus(int roomId,int batchId, int batchSize, string uom, int statusId, int userId)
         {
             try
             {
@@ -178,7 +178,7 @@ namespace XenparkBlankTemplate.Controllers
                         cmd.Parameters.AddWithValue("@RoomId", roomId);
                         cmd.Parameters.AddWithValue("@BatchId", batchId);
                         cmd.Parameters.AddWithValue("@BatchSize", batchSize);
-                        cmd.Parameters.AddWithValue("@UOM", uom);
+                        cmd.Parameters.AddWithValue("@UOM", uom?? "");
                         cmd.Parameters.AddWithValue("@StatusId", statusId);
                         cmd.Parameters.AddWithValue("@UserId", userId);
                         cmd.ExecuteNonQuery();

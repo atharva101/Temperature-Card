@@ -39,7 +39,12 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
     useEffect(() => {
         if (props.loggedInUser.RoleId == -1) {
-            dispatch(fetchRoomByDeviceIP());
+            const interval = setInterval(() => {
+                dispatch(fetchRoomByDeviceIP())
+                console.log('This will be called every 5 seconds');
+            }, 5000);
+            
+            return () => clearInterval(interval);
         }
     }, [])
 
@@ -109,7 +114,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
     const changeStatus = async (log: RoomLog) => {
 
         await Promise.all([
-            props.changeRoomStatus(room.RoomId, room.BatchId, room.BatchSize, 3, log.RoomStatusId, props.loggedInUser.Id)
+            props.changeRoomStatus(room.RoomId, room.BatchId, room.BatchSize, room.UOM, log.RoomStatusId, props.loggedInUser.Id)
         ]).then(async () => { if (connection) await connection.send("SendMessage", "RoomStatusChanged") });
 
     }
@@ -281,12 +286,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                                         <Card.Body style={{ 'minHeight': '90px' }}>
                                                                             <Row className="align-items-center" style={{'justifyContent': 'center'}}>
                                                                                 <Col sm={8}>
-                                                                                    {
-                                                                                        log.RoomStatusOrder == 1 ?
-                                                                                        <i className="fas fa-stamp f-32"></i>
-                                                                                        : 
-                                                                                        <i className="fas fa-expand f-32"></i>
-                                                                                    }
+
 
                                                                                 </Col>
                                                                             </Row>
