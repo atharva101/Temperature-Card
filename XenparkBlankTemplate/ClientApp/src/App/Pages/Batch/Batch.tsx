@@ -73,10 +73,10 @@ const Batch = (props: IBatchProps) => {
         dispatch(deleteMaster('batch', props.batches.selectedBatchId));
     }
 
-    const deleteDialog = () => {
+    const deleteDialog = (complete: boolean = false) => {
         confirmAlert({
           title: 'Confirm to Delete',
-          message: 'Are you sure you want to delete this item?',
+          message: complete? 'Are you sure you want to Mark Complete? This will delete all records associated to the selected batch.' : 'Are you sure you want to delete this item?',
           buttons: [
             {
               label: 'Yes',
@@ -91,9 +91,7 @@ const Batch = (props: IBatchProps) => {
       };
     useEffect(() => {
         if (props.batches.status === 'completed') {
-            dispatch(fetchAllBatches());
-            setCheckedBatches([] as IBatch[]);
-            setShowModal(false);
+            dispatch(fetchAllBatches(true));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.batches.status]);
@@ -239,6 +237,13 @@ const Batch = (props: IBatchProps) => {
                                 canDelete 
                                     ?
                                     <MenuItem onClick={() => deleteDialog()} ><i className="feather icon-delete" /> &nbsp;Delete</MenuItem>
+                                    : null
+                            }
+                            &nbsp;&nbsp;
+                            {
+                                canDelete 
+                                    ?
+                                    <MenuItem onClick={() => deleteDialog(true)} ><i className="feather icon-check-square" /> &nbsp;Mark Complete</MenuItem>
                                     : null
                             }
                             &nbsp;&nbsp;
