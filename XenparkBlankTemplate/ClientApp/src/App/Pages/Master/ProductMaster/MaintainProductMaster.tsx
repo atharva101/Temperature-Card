@@ -17,7 +17,6 @@ interface IMaintainMasterProps {
 const MaintainProductMaster = (props: IMaintainMasterProps) => {
     const [errors, setErrors] = useState([] as string[]);
     const [isEdit, setIsEdit] = useState(false);
-    const location = useLocation();
     const [master, setMaster] = useState({} as IMaster);
     const history = useHistory();
 
@@ -39,7 +38,7 @@ const MaintainProductMaster = (props: IMaintainMasterProps) => {
     const hasError = (key: string) => {
         return errors.indexOf(key) !== -1;
     }
-    const [validated, setValidated] = useState(false);
+    
     const handleSubmit = () => {
 
         let objError = [] as string[];

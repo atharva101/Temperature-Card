@@ -19,6 +19,7 @@ interface IMaintainUserProps {
     roomMaster: IRoomMaster[],
 }
 const MaintainUser = (props: IMaintainUserProps) => {
+    const [errors, setErrors] = useState([] as string[]);
     const [isEdit, setIsEdit] = useState(false);
 
     const [user, setUser] = useState({} as IUser);
@@ -97,19 +98,40 @@ const MaintainUser = (props: IMaintainUserProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.users.status]);
 
-    const [validated, setValidated] = useState(false);
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-
-            event.stopPropagation();
+    const hasError = (key: string) => {
+        return errors.indexOf(key) !== -1;
+    }
+    const handleSubmit = () => {
+        let objError = [] as string[];
+        if (!user.FirstName || user.FirstName.length < 1) {
+            objError.push('FirstName');
         }
-        setValidated(true);
+        if (!user.LastName || user.LastName.length < 1) {
+            objError.push('LastName');
+        }
+        if (!user.Email || user.Email.length < 1) {
+            objError.push('Email');
+        }
+        if (!user.UserName || user.UserName.length < 1) {
+            objError.push('Username');
+        }
+        if (!user.RoleId || user.RoleId < 1) {
+            objError.push('RoleId');
+        }
+        if (plantId < 1) {
+            objError.push('PlantId');
+        }
+        if (blockId < 1) {
+            objError.push('BlockId');
+        }
 
-        const tempUser = user;
-        if (userRooms) tempUser.UserRooms = userRooms;
-        dispatch(saveUser(tempUser));
+        setErrors(objError);
+
+        if (objError.length === 0) {
+            const tempUser = user;
+            if (userRooms) tempUser.UserRooms = userRooms;
+            dispatch(saveUser(tempUser));
+        }
 
     };
 
@@ -157,15 +179,15 @@ const MaintainUser = (props: IMaintainUserProps) => {
                 }
             }
             //SET ROOMS
-                let tempUserRooms = userRooms as IUserRoom[];
-                tempCheckedAreaList.forEach(areaId => {
-                    roomMaster.filter(x => x.PlantId === plantId && x.BlockId === blockId && x.AreaId === areaId).forEach(room => {
-                        if (userRooms.findIndex(x => x.RoomId === room.RoomId) < 0) {
-                            tempUserRooms = [...tempUserRooms, { Id: 0, RoomId: room.RoomId, UserId: user.Id }];
-                        }
-                    });
+            let tempUserRooms = userRooms as IUserRoom[];
+            tempCheckedAreaList.forEach(areaId => {
+                roomMaster.filter(x => x.PlantId === plantId && x.BlockId === blockId && x.AreaId === areaId).forEach(room => {
+                    if (userRooms.findIndex(x => x.RoomId === room.RoomId) < 0) {
+                        tempUserRooms = [...tempUserRooms, { Id: 0, RoomId: room.RoomId, UserId: user.Id }];
+                    }
                 });
-                setUserRooms(tempUserRooms);
+            });
+            setUserRooms(tempUserRooms);
         }
         else if (name.indexOf('room') >= 0) {
             const tempRoomIndex = userRooms.findIndex(x => x.RoomId === parseInt(value));
@@ -239,7 +261,7 @@ const MaintainUser = (props: IMaintainUserProps) => {
                                 ?
                                 <Spinner animation="border" variant="primary" />
                                 :
-                                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                                <Form noValidate >
                                     <Form.Row>
                                         <Form.Group as={Col} md="6" >
                                             <Form.Label>First name</Form.Label>
@@ -250,8 +272,11 @@ const MaintainUser = (props: IMaintainUserProps) => {
                                                 name="FirstName"
                                                 defaultValue={user.FirstName}
                                                 onChange={handleInputChanges}
+                                                className={hasError("FirstName") ? "is-invalid" : ""}
                                             />
-                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                            <div className={hasError("FirstName") ? "invalid-feedback" : "hidden"}>
+                                                Required Field
+                                            </div>
                                         </Form.Group>
                                         <Form.Group as={Col} md="6">
                                             <Form.Label>Last name</Form.Label>
@@ -262,16 +287,22 @@ const MaintainUser = (props: IMaintainUserProps) => {
                                                 name="LastName"
                                                 defaultValue={user.LastName}
                                                 onChange={handleInputChanges}
+                                                className={hasError("LastName") ? "is-invalid" : ""}
                                             />
-                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                            <div className={hasError("LastName") ? "invalid-feedback" : "hidden"}>
+                                                Required Field
+                                            </div>
                                         </Form.Group>
                                         <Form.Group as={Col} md="6">
                                             <Form.Label>Email</Form.Label>
                                             <Form.Control type="text" placeholder="Email" name="Email" required
                                                 defaultValue={user.Email}
                                                 onChange={handleInputChanges}
+                                                className={hasError("Email") ? "is-invalid" : ""}
                                             />
-                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                            <div className={hasError("Email") ? "invalid-feedback" : "hidden"}>
+                                                Required Field
+                                            </div>
                                         </Form.Group>
                                         <Form.Group as={Col} md="6">
                                             <Form.Label>Username</Form.Label>
@@ -282,13 +313,18 @@ const MaintainUser = (props: IMaintainUserProps) => {
                                                 required
                                                 defaultValue={user.UserName}
                                                 onChange={handleInputChanges}
+                                                className={hasError("Username") ? "is-invalid" : ""}
                                             />
-                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                            <div className={hasError("Username") ? "invalid-feedback" : "hidden"}>
+                                                Required Field
+                                            </div>
                                         </Form.Group>
                                         <Form.Group as={Col} md="6">
                                             <Form.Label>Role</Form.Label>
-                                            <select value={user.RoleId ?? -1} className="form-control" name="RoleId"
-                                                onChange={handleSelectChanges}>
+                                            <select value={user.RoleId ?? -1} name="RoleId"
+                                                onChange={handleSelectChanges}
+                                                className={hasError("RoleId") ? "form-control is-invalid" : "form-control"}
+                                            >
                                                 <option value="">--Select--</option>
                                                 {
                                                     props.roles && props.roles.map((x, i) => {
@@ -299,14 +335,18 @@ const MaintainUser = (props: IMaintainUserProps) => {
                                                 }
 
                                             </select>
-                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                            <div className={hasError("RoleId") ? "invalid-feedback" : "hidden"}>
+                                                Required Field
+                                            </div>
                                         </Form.Group>
                                     </Form.Row>
                                     <Form.Row>
                                         <Form.Group as={Col} md="6">
                                             <Form.Label>Plant</Form.Label>
-                                            <select className="form-control" name="plant" value={plantId}
-                                                onChange={handleSelectChanges}>
+                                            <select name="plant" value={plantId}
+                                                onChange={handleSelectChanges}
+                                                className={hasError("PlantId") ? "form-control is-invalid" : "form-control"}
+                                            >
                                                 <option>Select</option>
                                                 {
                                                     roomMaster
@@ -321,12 +361,16 @@ const MaintainUser = (props: IMaintainUserProps) => {
                                                         })
                                                 }
                                             </select>
-                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                            <div className={hasError("PlantId") ? "invalid-feedback" : "hidden"}>
+                                                Required Field
+                                            </div>
                                         </Form.Group>
                                         <Form.Group as={Col} md="6">
                                             <Form.Label>Block</Form.Label>
-                                            <select className="form-control" name="block" value={blockId}
-                                                onChange={handleSelectChanges}>
+                                            <select name="block" value={blockId}
+                                                onChange={handleSelectChanges}
+                                                className={hasError("BlockId") ? "form-control is-invalid" : "form-control"}
+                                            >
                                                 <option>Select</option>
                                                 {
                                                     roomMaster.filter(x => x.PlantId == plantId)
@@ -341,7 +385,9 @@ const MaintainUser = (props: IMaintainUserProps) => {
                                                         })
                                                 }
                                             </select>
-                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                            <div className={hasError("BlockId") ? "invalid-feedback" : "hidden"}>
+                                                Required Field
+                                            </div>
                                         </Form.Group>
                                     </Form.Row>
 
@@ -395,7 +441,11 @@ const MaintainUser = (props: IMaintainUserProps) => {
 
 
                                     }
-                                    <Button type="submit">Submit form</Button>
+
+                                    <Button variant="primary" className="btn-sm btn-round has-ripple"
+                                        onClick={() => handleSubmit()}>
+                                        Submit
+                                    </Button>
                                 </Form>
                         }
                     </Card.Body>
