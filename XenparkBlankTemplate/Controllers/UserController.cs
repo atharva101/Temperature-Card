@@ -97,7 +97,8 @@ namespace XenparkBlankTemplate.Controllers
         {
             try
             {
-                var users = context.User.Where(x => x.IsDeleted == false).ToList();
+                var users = context.User
+                    .Include(x => x.UserRooms).Where(x => x.IsDeleted == false).ToList();
                 return users;
             }
             catch (Exception ex)

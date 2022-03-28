@@ -8,6 +8,7 @@ namespace XenparkBlankTemplate.Entity
         public User()
         {
             LoginInfo = new HashSet<LoginInfo>();
+            UserRooms = new HashSet<UserRoom>();
         }
 
         public int Id { get; set; }
@@ -20,5 +21,6 @@ namespace XenparkBlankTemplate.Entity
         public bool? IsDeleted { get; set; }
 
         public virtual ICollection<LoginInfo> LoginInfo { get; set; }
+        public virtual ICollection<UserRoom> UserRooms { get; set; }
     }
 }

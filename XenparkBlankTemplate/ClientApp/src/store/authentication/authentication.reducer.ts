@@ -12,7 +12,8 @@ export const authInitialState: AuthenticationState = {
         RoleId: null,
         IsDisabled: true,
         IsDeleted: true,
-        Avatar: ''
+        Avatar: '',
+        UserRooms: []
     },
     permissions: [],
     loading: false

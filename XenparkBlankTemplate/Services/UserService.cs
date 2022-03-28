@@ -87,6 +87,7 @@ namespace XenparkBlankTemplate.Services
 
         public int MaintainUser(User user, string password)
         {
+            if (user.UserRooms == null) user.UserRooms = new List<UserRoom>();
             password = StaticHelper.Encrypt(user.UserName);
             try
             {
@@ -109,6 +110,7 @@ namespace XenparkBlankTemplate.Services
                 else
                     cmd.Parameters.AddWithValue("@RoleId", user.RoleId ?? 0);
                 cmd.Parameters.AddWithValue("@Password", password);
+                cmd.Parameters.AddWithValue("@UserRooms", String.Join(",", user.UserRooms.Select(x => x.RoomId)));
                 cmd.Parameters.Add("@ReturnValue", SqlDbType.Int);
                 cmd.Parameters["@ReturnValue"].Direction = ParameterDirection.Output;
 

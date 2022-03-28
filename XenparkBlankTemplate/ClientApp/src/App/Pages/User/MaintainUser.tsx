@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { Row, Col, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { connect, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
+import { IMaster, IRoomMaster } from '../../../models/master';
 import { IRole } from '../../../models/role';
-import { IUser } from '../../../models/user';
+import { IUser, IUserRoom } from '../../../models/user';
 import { RootState } from '../../../store/action-types';
-import { redirect } from '../../../store/master/master.action';
+import { fetchRoomMasterData, redirect } from '../../../store/master/master.action';
 import { fetchAllRoles } from '../../../store/role/role.action';
 
 
@@ -15,16 +16,26 @@ import { saveUser, selectUser, UserState } from '../../../store/user/user.action
 interface IMaintainUserProps {
     users: UserState;
     roles: IRole[];
+    roomMaster: IRoomMaster[],
 }
 const MaintainUser = (props: IMaintainUserProps) => {
     const [isEdit, setIsEdit] = useState(false);
 
     const [user, setUser] = useState({} as IUser);
+    const [roomMaster, setRoomMasters] = useState(props.roomMaster);
+    const [userRooms, setUserRooms] = useState([] as IUserRoom[]);
+
+    const [plantId, setPlantId] = useState(-1);
+    const [blockId, setBlockId] = useState(-1);
+    const [areaList, setAreaList] = useState([] as IMaster[]);
+    const [checkedAreaList, setCheckedAreaList] = useState([] as number[]);
+
     const history = useHistory();
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(fetchAllRoles(true));
+        dispatch(fetchRoomMasterData());
     }, []);
 
     useEffect(() => {
@@ -33,10 +44,17 @@ const MaintainUser = (props: IMaintainUserProps) => {
             const tempUser = props.users.users.find(x => x.Id === props.users.selectedUserId);
             if (tempUser) {
                 setUser(tempUser);
+                if (tempUser.UserRooms) {
+                    setUserRooms(tempUser.UserRooms)
+                }
             }
         }
         else setIsEdit(false);
     }, [props.users.selectedUserId, props.users.users]);
+
+    useEffect(() => {
+        setRoomMasters(props.roomMaster);
+    }, [props.roomMaster]);
 
     useEffect(() => {
         if (props.users.status === 'saved')
@@ -69,11 +87,93 @@ const MaintainUser = (props: IMaintainUserProps) => {
     const handleSelectChanges = (e: any) => {
         e.preventDefault();
         const { name, value } = e.target;
+        if (name == 'plant') {
+            setPlantId(parseInt(value));
+        }
+        else if (name == 'block') {
+            setBlockId(parseInt(value));
+        }
         setUser({
             ...user,
             [name]: value,
         });
     }
+
+    const handleCheckboxChange = (e: any) => {
+        const { name, value } = e.target;
+        if (name.indexOf('area') >= 0) {
+            //Deepak Area Checked
+            const tempAreaIndex = checkedAreaList.findIndex(x => x === parseInt(value));
+            if (e.target.checked == true) {
+                if (tempAreaIndex < 0) {
+                    // add area to checked area list                    
+                    setCheckedAreaList([...checkedAreaList, parseInt(value)]);
+                }
+            } else {
+                //remove area from checkedAreaList
+                if (tempAreaIndex >= 0) {
+                    setCheckedAreaList(checkedAreaList.filter(x => x !== parseInt(value)));
+                }
+            }
+        }
+        else if (name.indexOf('room') >= 0) {
+            const tempRoomIndex = userRooms.findIndex(x => x.RoomId === parseInt(value));
+
+            if (e.target.checked == true) {
+                if (tempRoomIndex < 0) {
+                    // add room to UserRoom list
+                    setUserRooms([...userRooms, { Id: 0, UserId: user.Id, RoomId: parseInt(value) }]);
+
+                }
+            } else {
+                //remove area from checkedAreaList
+                if (tempRoomIndex >= 0) {
+                    setUserRooms(userRooms.filter(x => x.RoomId !== parseInt(value)));
+                }
+                //Remove Area Id from CheckedAreaList
+                const tempArea = roomMaster.find(x => x.RoomId === parseInt(value));
+                if (tempArea) {
+                    setCheckedAreaList(checkedAreaList.filter(x => x !== tempArea.AreaId));
+                }
+            }
+        }
+    }
+
+    useEffect(() => {
+        const temp = roomMaster.filter(x => x.PlantId === plantId && x.BlockId === blockId);
+        const tmpAreaList: IMaster[] = [];
+        temp.forEach(element => {
+            if (tmpAreaList.findIndex(x => x.Id === element.AreaId) < 0) {
+                tmpAreaList.push({ Id: element.AreaId, Code: element.AreaCode, Description: element.AreaDescription } as IMaster);
+            }
+        });
+        setAreaList(tmpAreaList);
+    }, [blockId, plantId]);
+
+    useEffect(() => {
+        let tempUserRooms = userRooms as IUserRoom[];
+        checkedAreaList.forEach(areaId => {
+            roomMaster.filter(x => x.PlantId === plantId && x.BlockId === blockId && x.AreaId === areaId).forEach(room => {
+                if (userRooms.findIndex(x => x.RoomId === room.RoomId) < 0) {
+                    tempUserRooms = [...tempUserRooms, { Id: 0, RoomId: room.RoomId, UserId: user.Id }];
+                }
+            });
+        });
+        setUserRooms(tempUserRooms);
+    }, [checkedAreaList]);
+
+    useEffect(() => {
+        console.log('test');
+        console.log(user);
+        // const tempUser = user;
+        // tempUser.UserRooms = userRooms;
+        // console.log('test');
+        // console.log(tempUser);
+        // console.log(tempUser.UserRooms);
+        // setUser(tempUser);
+
+    }, [userRooms]);
+
     const redirectToUserList = () => {
         dispatch(selectUser(-1));
         history.push('/user');
@@ -162,7 +262,99 @@ const MaintainUser = (props: IMaintainUserProps) => {
                                             <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
                                         </Form.Group>
                                     </Form.Row>
+                                    <Form.Row>
+                                        <Form.Group as={Col} md="6">
+                                            <Form.Label>Plant</Form.Label>
+                                            <select className="form-control" name="plant" value={plantId}
+                                                onChange={handleSelectChanges}>
+                                                <option>Select</option>
+                                                {
+                                                    roomMaster
+                                                        .map((x: IRoomMaster) => x.PlantId)
+                                                        .filter((x, i: number, a) => a.indexOf(x) === i) //get Distinct
+                                                        .map((x, i) => {
+                                                            return <option key={i} value={x}>
+                                                                {
+                                                                    roomMaster.filter(p => p.PlantId === x)[0].PlantName
+                                                                }
+                                                            </option>
+                                                        })
+                                                }
+                                            </select>
+                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                        </Form.Group>
+                                        <Form.Group as={Col} md="6">
+                                            <Form.Label>Block</Form.Label>
+                                            <select className="form-control" name="block" value={blockId}
+                                                onChange={handleSelectChanges}>
+                                                <option>Select</option>
+                                                {
+                                                    roomMaster.filter(x => x.PlantId == plantId)
+                                                        .map((x: IRoomMaster) => x.BlockId)
+                                                        .filter((x, i: number, a) => a.indexOf(x) === i) //get Distinct
+                                                        .map((x, i) => {
+                                                            return <option key={i} value={x}>
+                                                                {
+                                                                    roomMaster.filter(p => p.BlockId === x)[0].BlockCode
+                                                                }
+                                                            </option>
+                                                        })
+                                                }
+                                            </select>
+                                            <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
+                                        </Form.Group>
+                                    </Form.Row>
 
+                                    {
+
+                                        areaList && areaList.map((area, i) => {
+
+                                            return <>
+                                                <Form.Row>
+                                                    <Form.Group as={Col} md="6" ><Form.Label style={{ fontWeight: "bold" }}>Area</Form.Label></Form.Group>
+                                                </Form.Row>
+                                                <Form.Row>
+                                                    <Form.Group as={Col} md="12" >
+                                                        <Form.Check
+                                                            style={{ fontWeight: "bold" }}
+                                                            inline
+                                                            key={area.Id}
+                                                            type='checkbox'
+                                                            name={'area' + i}
+                                                            id={`chk-${area.Id}`}
+                                                            checked={checkedAreaList.findIndex(x => x === area.Id) >= 0 ? true : false}
+                                                            label={area.Description}
+                                                            onChange={handleCheckboxChange}
+                                                            value={area.Id}
+                                                        />
+                                                    </Form.Group>
+                                                </Form.Row>
+                                                <Form.Row style={{ paddingLeft: "25px" }}>
+                                                    {
+                                                        roomMaster &&
+                                                        roomMaster.filter(x => x.PlantId === plantId && x.BlockId === blockId && x.AreaId === area.Id)
+                                                            .map((room, roomIndex) => {
+                                                                return <Form.Group as={Col} md="4" key={i.toString() + roomIndex.toString()}>
+                                                                    <Form.Check
+                                                                        inline
+                                                                        key={room.RoomId}
+                                                                        type='checkbox'
+                                                                        id={`chk-${room.RoomId}`}
+                                                                        name={`room-${room.RoomId}`}
+                                                                        label={room.RoomDescription}
+                                                                        onChange={handleCheckboxChange}
+                                                                        value={room.RoomId}
+                                                                        checked={userRooms.findIndex(x => x.RoomId === room.RoomId) >= 0 ? true : false}
+                                                                    />
+                                                                </Form.Group>
+                                                            })
+                                                    }
+                                                </Form.Row>
+                                            </>
+                                        })
+
+
+                                    }
                                     <Button type="submit">Submit form</Button>
                                 </Form>
                         }
@@ -175,7 +367,8 @@ const MaintainUser = (props: IMaintainUserProps) => {
 };
 const mapStateToProps = (state: RootState) => ({
     users: state.userState as UserState,
-    roles: state.roleState.roles as IRole[]
+    roles: state.roleState.roles as IRole[],
+    roomMaster: state.masterState.master as IRoomMaster[],
 });
 
 export default connect(mapStateToProps)(MaintainUser)

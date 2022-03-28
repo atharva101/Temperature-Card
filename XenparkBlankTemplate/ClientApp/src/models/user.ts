@@ -1,3 +1,5 @@
+import { IRoomMaster } from "./master";
+
 export interface IUser {
     Id: number;
     FirstName: string;
@@ -8,4 +10,11 @@ export interface IUser {
     IsDisabled: boolean | null;
     IsDeleted: boolean | null;
     Avatar: string,
+    UserRooms: IUserRoom[]
+}
+
+export interface IUserRoom {
+    Id: number;
+    UserId: number;
+    RoomId: number;
 }
