@@ -293,107 +293,7 @@ BEGIN
   END  
   RETURN @ReturnValue  
 END  
-GO
-/****** Object:  StoredProcedure [dbo].[sprocAddEditUser]    Script Date: 29-03-2022 10:06:01 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-  
-CREATE Procedure [dbo].[sprocAddEditUser]  
-@UserId      INT,  
-@FirstName   VARCHAR(50),  
-@LastName    VARCHAR(50),  
-@Email       VARCHAR(50),  
-@UserName    VARCHAR(50),  
-@IsDisabled  BIT,  
-@IsDeleted   BIT,  
-@RoleId      INT,  
-@Password    VARCHAR(50),
-@UserRooms   VARCHAR(MAX),
-@ReturnValue INT OUTPUT  
-AS  
-BEGIN
-  IF(@UserRooms is NULL)
-  BEGIN
-    SET @UserRooms = ''
-  END
-  DECLARE @XML AS XML
-  DECLARE @Delimiter AS CHAR(1) =','
-  SET @XML = CAST(('<X>'+REPLACE(@UserRooms,@Delimiter ,'</X><X>')+'</X>') AS XML)
-  
-  DECLARE @temp TABLE (ID INT)
-  INSERT INTO @temp
-  SELECT N.value('.', 'INT') AS ID FROM @XML.nodes('X') AS T(N)
-  
-  IF(ISNULL(@UserId,0) < 1)  
-  BEGIN  
-    --CHECK EMAIL  
-    DECLARE @EmailCount INT  
-    SELECT @EmailCount = COUNT(*) FROM [User] WHERE Email = @Email AND @FirstName <> 'Device' AND @RoleId <> -1  
-    IF @EmailCount > 0   
-    BEGIN  
-    SET @ReturnValue = -9  
-    RETURN @ReturnValue  
-    END  
-       
-      
-    --Check USERNAME  
-    DECLARE @UserNameCount INT  
-    SELECT @UserNameCount = COUNT(*) FROM [User] WHERE UserName = @UserName  
-    IF @UserNameCount > 0   
-    BEGIN  
-    SET @ReturnValue = -10  
-    RETURN @ReturnValue  
-    END  
-     
-  
-    DECLARE @OutputTable TABLE (UserId INT)      
-    INSERT INTO [User] (FirstName,LastName,Email,UserName,RoleId,IsDisabled,IsDeleted)  
-    OUTPUT inserted.Id INTO @OutputTable(UserId)  
-    VALUES (@FirstName,@LastName,@Email,@UserName,@RoleId,0,0)  
-  
-    DECLARE @InsertedUserID INT;  
-    SELECT TOP 1 @InsertedUserID = UserId FROM @OutputTable  
-    INSERT INTO LoginInfo (UserId,Password,IncorrectAttempt,LastLogInTime,Blocked,ForceChangePassword)  
-    SELECT @InsertedUserID, @Password, 0, NULL,0, 1  
-    
-	INSERT INTO UserRoom(UserId, RoomId)
-	SELECT @InsertedUserID, ID FROM @temp
-
-    SET @ReturnValue = -103  
-    RETURN @ReturnValue   
-  END  
-  ELSE  
-  BEGIN  
-    DECLARE @IsEmailChanged INT  
-    SELECT @IsEmailChanged = COUNT(*) FROM [User] WHERE Id = @UserId AND Email <> @Email  
-    UPDATE U SET FirstName = @FirstName,  
-                      LastName = @LastName,  
-                      Email = CASE WHEN @IsEmailChanged > 0 THEN @Email ELSE U.Email END,  
-                      UserName = @UserName,  
-                      RoleId = @RoleId,  
-                      IsDisabled = @IsDisabled,  
-                      IsDeleted = @IsDeleted  
-    FROM [User] U  
-    WHERE Id= @UserId  
-  
-    UPDATE LoginInfo  SET Password = @Password WHERE UserId = @UserId AND @IsEmailChanged > 0  
-    
-	DELETE FROM UserRoom WHERE UserId = @UserId
-
-	INSERT INTO UserRoom(UserId, RoomId)
-	SELECT @UserId, ID FROM @temp
-
-    IF(@IsEmailChanged > 0)  
-    BEGIN  
-      SET @ReturnValue = -103  
-      RETURN @ReturnValue  
-    END  
-    SET @ReturnValue = -101  
-    RETURN @ReturnValue  
-  END  
-END  
+ 
 GO
 /****** Object:  StoredProcedure [dbo].[sprocApproveMaster]    Script Date: 29-03-2022 10:06:01 ******/
 SET ANSI_NULLS ON
@@ -1253,4 +1153,108 @@ BEGIN
 
 END  
   
+GO
+  
+CREATE Procedure [dbo].[sprocAddEditUser]  
+@UserId      INT,  
+@FirstName   VARCHAR(50),  
+@LastName    VARCHAR(50),  
+@Email       VARCHAR(50),  
+@UserName    VARCHAR(50),  
+@IsDisabled  BIT,  
+@IsDeleted   BIT,  
+@RoleId      INT,  
+@Password    VARCHAR(50),
+@UserRooms   VARCHAR(MAX),
+@ReturnValue INT OUTPUT  
+AS  
+BEGIN
+  IF(@UserRooms is NULL)
+  BEGIN
+    SET @UserRooms = ''
+  END
+  DECLARE @XML AS XML
+  DECLARE @Delimiter AS CHAR(1) =','
+  SET @XML = CAST(('<X>'+REPLACE(@UserRooms,@Delimiter ,'</X><X>')+'</X>') AS XML)
+  
+  DECLARE @temp TABLE (ID INT)
+  INSERT INTO @temp
+  SELECT N.value('.', 'INT') AS ID FROM @XML.nodes('X') AS T(N)
+  
+  IF(ISNULL(@UserId,0) < 1)  
+  BEGIN  
+    --CHECK EMAIL  
+    DECLARE @EmailCount INT  
+    SELECT @EmailCount = COUNT(*) FROM [User] WHERE Email = @Email AND @FirstName <> 'Device' AND @RoleId <> -1  
+    IF @EmailCount > 0   
+    BEGIN  
+    SET @ReturnValue = -9  
+    RETURN @ReturnValue  
+    END  
+       
+      
+    --Check USERNAME  
+    DECLARE @UserNameCount INT  
+    SELECT @UserNameCount = COUNT(*) FROM [User] WHERE UserName = @UserName  
+    IF @UserNameCount > 0   
+    BEGIN  
+    SET @ReturnValue = -10  
+    RETURN @ReturnValue  
+    END  
+     
+  
+    DECLARE @OutputTable TABLE (UserId INT)      
+    INSERT INTO [User] (FirstName,LastName,Email,UserName,RoleId,IsDisabled,IsDeleted)  
+    OUTPUT inserted.Id INTO @OutputTable(UserId)  
+    VALUES (@FirstName,@LastName,@Email,@UserName,@RoleId,0,0)  
+  
+    DECLARE @InsertedUserID INT;  
+    SELECT TOP 1 @InsertedUserID = UserId FROM @OutputTable  
+    INSERT INTO LoginInfo (UserId,Password,IncorrectAttempt,LastLogInTime,Blocked,ForceChangePassword)  
+    SELECT @InsertedUserID, @Password, 0, NULL,0, 1  
+    
+	IF (@RoleId > 0)
+	BEGIN
+	INSERT INTO UserRoom(UserId, RoomId)
+	SELECT @InsertedUserID, ID FROM @temp
+	END
+
+    SET @ReturnValue = -103  
+    RETURN @ReturnValue   
+  END  
+  ELSE  
+  BEGIN  
+    DECLARE @IsEmailChanged INT  
+    SELECT @IsEmailChanged = COUNT(*) FROM [User] WHERE Id = @UserId AND Email <> @Email  
+    UPDATE U SET FirstName = @FirstName,  
+                      LastName = @LastName,  
+                      Email = CASE WHEN @IsEmailChanged > 0 THEN @Email ELSE U.Email END,  
+                      UserName = @UserName,  
+                      RoleId = @RoleId,  
+                      IsDisabled = @IsDisabled,  
+                      IsDeleted = @IsDeleted  
+    FROM [User] U  
+    WHERE Id= @UserId  
+  
+    UPDATE LoginInfo  SET Password = @Password WHERE UserId = @UserId AND @IsEmailChanged > 0  
+    
+	IF (@RoleId > 0)
+	BEGIN
+		DELETE FROM UserRoom WHERE UserId = @UserId
+
+
+		INSERT INTO UserRoom(UserId, RoomId)
+		SELECT @UserId, ID FROM @temp
+	END
+	
+
+    IF(@IsEmailChanged > 0)  
+    BEGIN  
+      SET @ReturnValue = -103  
+      RETURN @ReturnValue  
+    END  
+    SET @ReturnValue = -101  
+    RETURN @ReturnValue  
+  END  
+END  
 GO

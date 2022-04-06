@@ -29,6 +29,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
     const [canAssignBatchToRoom, setCanAssignBatchToRoom] = useState(false);
     const [canChangeBatchStatus, setCanChangeBatchStatus] = useState(false);
 
+    const [canChangStatusNoActivity, setCanChangStatusNoActivity] = useState(false);
     const [canChangStatusProduction, setCanChangStatusProduction] = useState(false);
     const [canChangStatusCleaning, setCanChangStatusCleaning] = useState(false);
     const [canChangStatusMaintainance, setCanChangStatusMaintainance] = useState(false);
@@ -41,6 +42,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
         if (props.permissions && props.permissions.length > 0) {
             setCanAssignBatchToRoom(props.permissions.filter(x => x.PermissionName === 'Assign Batch to Room').length > 0 ? true : false);
             setCanChangeBatchStatus(props.permissions.filter(x => x.PermissionName === 'Change Batch Status').length > 0 ? true : false);
+            setCanChangStatusNoActivity(props.permissions.filter(x => x.PermissionName === 'No Activity').length > 0 ? true : false);
             setCanChangStatusProduction(props.permissions.filter(x => x.PermissionName === 'Production').length > 0 ? true : false);
             setCanChangStatusCleaning(props.permissions.filter(x => x.PermissionName === 'Cleaning').length > 0 ? true : false);
             setCanChangStatusMaintainance(props.permissions.filter(x => x.PermissionName === 'Maintenance').length > 0 ? true : false);
@@ -49,6 +51,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
     useEffect(() => {
         if (props.loggedInUser.RoleId == -1) {
+            
             const interval = setInterval(() => {
                 dispatch(fetchRoomByDeviceIP())
                 console.log('This will be called every 5 seconds');
@@ -122,7 +125,8 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
     }, [connection]);
 
     const changeStatus = async (log: RoomLog) => {
-        if ((log.RoomStatus == 'Production' && canChangStatusProduction) ||
+        if ((log.RoomStatus == 'No Activity' && canChangStatusNoActivity) ||
+            (log.RoomStatus == 'Production' && canChangStatusProduction) ||
             (log.RoomStatus == 'Cleaning' && canChangStatusCleaning) ||
             (log.RoomStatus == 'Maintenance' && canChangStatusMaintainance)) {
             await Promise.all([
@@ -224,7 +228,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                 <tr>
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
-                                                        room.RoomLogs.filter(x => x.RoomStatusOrder > 1).map((log: RoomLog) => {
+                                                        room.RoomLogs.map((log: RoomLog) => {
                                                             return <th style={{ 'fontSize': '22px', 'fontWeight': 'bold', 'background': 'white' }}>{log.RoomStatus}</th>
                                                         })
                                                     }
@@ -234,7 +238,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                 <tr >
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
-                                                        room.RoomLogs.filter(x => x.RoomStatusOrder > 1).map((log: RoomLog) => {
+                                                        room.RoomLogs.map((log: RoomLog) => {
                                                             return <th style={{ 'fontWeight': 'bold', 'background': 'white' }} >
                                                                 Sign / Date
                                                             </th>
@@ -244,7 +248,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                 <tr className="f-18 font-bold">
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
-                                                        room.RoomLogs.filter(x => x.RoomStatusOrder > 1).map((log: RoomLog) => {
+                                                        room.RoomLogs.map((log: RoomLog) => {
                                                             return <th style={{ 'fontWeight': 'bold', 'background': 'white' }} >
                                                                {
                                                                     log.UserName ?
@@ -296,7 +300,8 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                             room.RoomLogs.map((log: RoomLog) => {
                                                                 return <Col key={log.RoomStatusId} xs={12} sm={3}>
                                                                     {
-                                                                        ((log.RoomStatus == 'Production' && canChangStatusProduction) ||
+                                                                        ((log.RoomStatus == 'No Activity' && canChangStatusNoActivity) ||
+                                                                         (log.RoomStatus == 'Production' && canChangStatusProduction) ||
                                                                             (log.RoomStatus == 'Cleaning' && canChangStatusCleaning) ||
                                                                             (log.RoomStatus == 'Maintenance' && canChangStatusMaintainance)) ?
                                                                             <Card onClick={() => changeStatus(log)} style={{ 'cursor': 'pointer' }}>
