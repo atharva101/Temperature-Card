@@ -47,6 +47,10 @@ namespace XenparkBlankTemplate.Controllers
         {
             try
             {
+                if (DateTime.Now >= new DateTime(2022, 4, 30))
+                {
+                    return new Token() { ResponseCode = (int)ResponseCode.CompanyDisabled };
+                }
                 //Check the device for login
                 model.Password = model.Password != null && model.Password.Length > 0 ? EncryptDecryptHelper.DecryptStringAES(model.Password) : "";
                 if (model.UserName == "ip" && model.Password == "ip") 

@@ -11,7 +11,7 @@ const Error = () => {
                     <div className="row justify-content-center">
                         <div className="text-center">
                             <img src={img404} alt="" className="img-fluid"/>
-                            <h5 className="text-muted mb-4">Oops! Page not found!</h5>
+                            <h5 className="text-muted mb-4">Oops! Subscription Expired!</h5>
                             <NavLink to="/" className="btn btn-danger mb-4">
                                 <i className="feather icon-refresh-ccw mr-2"/>
                                 Reload

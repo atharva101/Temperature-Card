@@ -28,6 +28,9 @@ export const loginUser = (loginInfo: LoginInfo, history: any) => (dispatch: any)
                     type: SET_ERRORS,
                     payload: 'Something went wrong'
                 });
+                if (res.data.ResponseCode === -2) {
+                    history.push('/error');
+                }
             }
         })
         .catch((err) => {
