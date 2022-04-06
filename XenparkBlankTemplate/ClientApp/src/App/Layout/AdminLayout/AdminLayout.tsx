@@ -16,6 +16,7 @@ import { RootState } from '../../../store/action-types';
 import { IPermission } from '../../../models/role';
 interface IAdminLayoutProps {
     permissions: IPermission[];
+    loggedInUser: any;
 }
 const AdminLayout = (props: IAdminLayoutProps) => {
     const { windowWidth } = useWindowSize();
@@ -24,7 +25,9 @@ const AdminLayout = (props: IAdminLayoutProps) => {
     const collapseMenu = useSelector((state) => state.theme.collapseMenu);
     const layout = useSelector((state) => state.theme.layout);
     const subLayout = useSelector((state) => state.theme.subLayout);
-
+    useEffect(() => {
+        console.log(props.loggedInUser);
+    }, [props.loggedInUser]);
     useEffect(() => {
         if (windowWidth > 992 && windowWidth <= 1024 && layout !== 'horizontal') {
             dispatch({ type: actionTypes.COLLAPSE_MENU });
@@ -50,34 +53,52 @@ const AdminLayout = (props: IAdminLayoutProps) => {
         mainClass = [...mainClass, 'container'];
     }
     return (<>
-        <Navigation />
-        <NavBar />
-        <div className="pcoded-main-container" onClick={() => mobileOutClickHandler}>
-            <div className={mainClass.join(' ')}>
-                <div className="pcoded-content">
-                    <div className="pcoded-inner-content">
-                        <Breadcrumb />
-                        <div className="main-body">
-                            <div className="page-wrapper">
-                                <Suspense fallback={<Loader />}>
-                                    <Switch>
-                                        {routes.map((route, index) => {
-                                            return route.component ? (<PrivateRoute key={index} path={route.path} exact={route.exact} component={route.component} />) : null;
-                                        })}
-                                        <Redirect from="/" to={defaultPath} />
-                                    </Switch>
-                                </Suspense>
+        {
+            props.loggedInUser && props.loggedInUser.RoleId === -1
+
+                ?
+                <Suspense fallback={<Loader />}>
+                    <Switch>
+                        {routes.map((route, index) => {
+                            return route.component ? (<PrivateRoute key={index} path={route.path} exact={route.exact} component={route.component} />) : null;
+                        })}
+                        <Redirect from="/" to={defaultPath} />
+                    </Switch>
+                </Suspense>
+                :
+                <>
+                    <Navigation />
+                    <NavBar />
+                    <div className="pcoded-main-container" onClick={() => mobileOutClickHandler}>
+                        <div className={mainClass.join(' ')}>
+                            <div className="pcoded-content">
+                                <div className="pcoded-inner-content">
+                                    <Breadcrumb />
+                                    <div className="main-body">
+                                        <div className="page-wrapper">
+                                            <Suspense fallback={<Loader />}>
+                                                <Switch>
+                                                    {routes.map((route, index) => {
+                                                        return route.component ? (<PrivateRoute key={index} path={route.path} exact={route.exact} component={route.component} />) : null;
+                                                    })}
+                                                    <Redirect from="/" to={defaultPath} />
+                                                </Switch>
+                                            </Suspense>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                </>
+        }
+
 
     </>);
 };
 
 const mapStateToProps = (state: RootState) => ({
-    permissions: state.authentication.permissions as IPermission[]
+    permissions: state.authentication.permissions as IPermission[],
+    loggedInUser: state.authentication.loggedInUser as any,
 });
 export default connect(mapStateToProps)(AdminLayout);

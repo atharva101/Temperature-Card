@@ -3,6 +3,7 @@ export interface Token {
   //token?: string;
   token_type?: string;
   expires_in?: number;
+  ResponseCode?: number;
 }
 
 export interface LoginInfo {
