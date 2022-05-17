@@ -80,6 +80,13 @@ export const saveMaster = (type: string, master: IMaster) => (dispatch: Dispatch
                                         : type === 'uom' ? 'Unit of measurement already exists !'
                                             : 'Something went wrong. Please try again !'
                 });
+            }
+            else if (res.data === -102) {
+                dispatch({
+                    type: MasterActionTypes.SAVE_MASTER_FAILED,
+                    payload: type === 'room' ? 'Device IP already exists !'
+                                            : 'Something went wrong. Please try again !'
+                });
             } else {
                 dispatch({
                     type: MasterActionTypes.SAVE_MASTER_FAILED,

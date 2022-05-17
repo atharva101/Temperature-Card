@@ -114,7 +114,7 @@ const MaintainRoomMaster = (props: IMaintainMasterProps) => {
                                         type="text"
                                         placeholder="Description"
                                         name="Description"
-                                        defaultValue={master.Description}
+                                        value={master.Description}
                                         onChange={handleInputChanges}
                                     />
                                     <Form.Control.Feedback type="invalid">Required field</Form.Control.Feedback>
@@ -142,7 +142,7 @@ const MaintainRoomMaster = (props: IMaintainMasterProps) => {
                                                 "Device IP"
                                             }
                                             name="Column1"
-                                            defaultValue={master.Column1}
+                                            value={master.Column1}
                                             onChange={handleInputChanges}
                                         />
                                 </Form.Group>
