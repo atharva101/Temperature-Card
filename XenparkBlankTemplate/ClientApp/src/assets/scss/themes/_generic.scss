@@ -54,7 +54,7 @@ $i: 0;
 @each $value in $color-name {
     $i: index($color-name, $value);
     .bg-#{""+$value} {
-        background-color: nth($color-color,$i),;
+        background-color: nth($color-color,$i) !important;
     }
     .text-#{""+$value} {
         color: nth($color-color,$i);
@@ -126,7 +126,7 @@ $i: 100;
 @each $value in $social-name {
     $i: index($social-name, $value);
     .bg-#{""+$value} {
-        background: nth($social-color,$i);
+        background: nth($social-color,$i) !important;
     }
     .text-#{""+$value} {
         color: nth($social-color,$i);

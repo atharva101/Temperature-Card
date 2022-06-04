@@ -229,17 +229,21 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.map((log: RoomLog) => {
-                                                            return <th style={{ 'fontSize': '22px', 'fontWeight': 'bold', 'background': 'white' }}>{log.RoomStatus}</th>
+                                                            return <th 
+                                                            className={`${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : ""}`}
+                                                            style={{ 'fontSize': '22px', 'fontWeight': 'bold' }}>{log.RoomStatus}</th>
                                                         })
                                                     }
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr >
+                                                <tr>
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.map((log: RoomLog) => {
-                                                            return <th style={{ 'fontWeight': 'bold', 'background': 'white' }} >
+                                                            return <th 
+                                                            className={`${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : ""}`}
+                                                            style={{ 'fontWeight': 'bold', 'background': 'white' }} >
                                                                 Sign / Date
                                                             </th>
                                                         })
@@ -249,7 +253,9 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.map((log: RoomLog) => {
-                                                            return <th style={{ 'fontWeight': 'bold', 'background': 'white' }} >
+                                                            return <th 
+                                                            className={`${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : ""}`}
+                                                            style={{ 'fontWeight': 'bold', 'background': 'white' }} >
                                                                {
                                                                     log.UserName ?
                                                                         <span>
