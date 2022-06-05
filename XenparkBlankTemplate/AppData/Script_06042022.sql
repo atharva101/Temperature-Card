@@ -1,5 +1,4 @@
-USE [RoomStatusNew]
-GO
+
 /****** Object:  StoredProcedure [dbo].[sprocDeleteMaster]    Script Date: 6/4/2022 6:23:32 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -91,38 +90,30 @@ END
 
 GO 
 
-USE [RoomStatusNew]
-GO
-/****** Object:  StoredProcedure [dbo].[sprocAssignBatchToRoom]    Script Date: 6/4/2022 6:14:43 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-ALTER Procedure [dbo].[sprocAssignBatchToRoom]
-@BatchId INT,
-@RoomId INT,
-@UserId  INT
-AS   
-BEGIN
-  DECLARE @WFStatus INT
-  SELECT TOP 1 @WFStatus = Id From dbo.StatusWorkFlow Where [ProductProcessing] = 1 
+ALTER Procedure [dbo].[sprocAssignBatchToRoom]  
+@BatchId INT,  
+@RoomId INT,  
+@UserId  INT  
+AS     
+BEGIN  
+  DECLARE @WFStatus INT  
+  SELECT TOP 1 @WFStatus = Id From dbo.StatusWorkFlow Where [ProductProcessing] = 1   
+    
+  DECLARE @BatchSize INT  
+  DECLARE @UOM INT  
+  SELECT @BatchSize = BatchSize, @UOM = P.UOM  FROM Batch B  
+  INNER JOIN mylan_ProductMaster P ON P.Id = B.ProductId WHERE B.Id = @BatchId  
   
-  DECLARE @BatchSize INT
-  DECLARE @UOM INT
-  SELECT @BatchSize = BatchSize, @UOM = P.UOM  FROM Batch B
-  INNER JOIN mylan_ProductMaster P ON P.Id = B.ProductId WHERE B.Id = @BatchId
-
-  UPDATE  dbo.RoomLog
-  SET StatusId = @WFStatus, 
-  [TimeStamp] = GETDATE(),
-  BatchId = @BatchId,
-  [BatchSize] = @UOM,
-  UserId = @UserId
-  WHERE RoomId = @RoomId
-
+  UPDATE  dbo.RoomLog  
+  SET StatusId = @WFStatus,   
+  [TimeStamp] = GETDATE(),  
+  BatchId = @BatchId,  
+  [BatchSize] = @BatchSize,  
+  UserId = @UserId,
+  UOM = @UOM
+  WHERE RoomId = @RoomId  
+  
 END
-GO
-USE [RoomStatusNew]
 GO
 /****** Object:  StoredProcedure [dbo].[sprocGetRoomStatus]    Script Date: 6/4/2022 5:36:24 PM ******/
 SET ANSI_NULLS ON
@@ -254,17 +245,10 @@ DROP Table #Rooms
 DROP Table #RoomLog                
                
 END      
-GO
 
-USE [RoomStatusNew]
 GO
 /****** Object:  StoredProcedure [dbo].[sprocChangeRoomStatus]    Script Date: 6/4/2022 5:28:44 PM ******/
-SET ANSI_NULLS ON
 GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-
 ALTER Procedure [dbo].[sprocChangeRoomStatus]
 @RoomId INT,
 @BatchId INT,
@@ -300,12 +284,19 @@ select TOP 1 @RoomCurrentStatusId = StatusId  FROM RoomLog WHERE RoomId = @RoomI
 UPDATE dbo.RoomLog
 SET StatusId = @StatusId,
 [TimeStamp] = GETDATE(),
-BatchId = @BatchId,
-[BatchSize] = @BatchSize,
-[UOM] = @UOMId,
 UserId = @UserId
 WHERE RoomId = @RoomId
 AND @StatusId <> @RoomCurrentStatusId
+
+UPDATE dbo.RoomLog
+SET 
+BatchId = @BatchId,
+[BatchSize] = @BatchSize,
+[UOM] = @UOMId
+WHERE RoomId = @RoomId
+AND @StatusId <> @RoomCurrentStatusId
+AND ISNULL(BatchId, 0) < 1 
+
 
 ---- Create a record in RoomLog
 --INSERT INTO dbo.RoomLog(RoomId, StatusId, [TimeStamp], BatchId, [BatchSize], UOM, UserId)
@@ -313,8 +304,6 @@ AND @StatusId <> @RoomCurrentStatusId
 --WHERE @StatusId <> @RoomCurrentStatusId
 
 END
-GO
-USE [RoomStatusNew]
 GO
 /****** Object:  StoredProcedure [dbo].[sprocAddEditMaster]    Script Date: 6/4/2022 5:22:39 PM ******/
 SET ANSI_NULLS ON
@@ -516,3 +505,8 @@ BEGIN
 END 
 GO       
 
+Update StatusWorkFlow
+set ProductProcessing = 1 
+WHERE [Status] = 'Maintenance'
+
+GO

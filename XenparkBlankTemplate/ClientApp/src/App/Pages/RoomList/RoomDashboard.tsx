@@ -311,14 +311,14 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                                             (log.RoomStatus == 'Cleaning' && canChangStatusCleaning) ||
                                                                             (log.RoomStatus == 'Maintenance' && canChangStatusMaintainance)) ?
                                                                             <Card onClick={() => changeStatus(log)} style={{ 'cursor': 'pointer' }}>
-                                                                                <Card.Body style={{ 'minHeight': '90px' }}>
+                                                                                {/* <Card.Body style={{ 'minHeight': '90px' }}>
                                                                                     <Row className="align-items-center" style={{ 'justifyContent': 'center' }}>
                                                                                         <Col sm={8}>
 
 
                                                                                         </Col>
                                                                                     </Row>
-                                                                                </Card.Body>
+                                                                                </Card.Body> */}
                                                                                 <Card.Footer
                                                                                     className={`
                                                             ${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : "bg-c-yellow"

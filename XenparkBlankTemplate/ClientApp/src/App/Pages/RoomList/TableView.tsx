@@ -311,7 +311,7 @@ const TableView = (props: ITableViewProps) => {
                                         : { icon: '', disable: true, onClick: (rowData) => { } }
                                 },
                                 (rowData) => {
-                                    return canAssignBatchToRoom
+                                    return canAssignBatchToRoom && rowData.BatchId > 0
                                         ? { icon: 'edit', disable: false, tooltip:'Edit Batch Size', onClick: (event, row) => handleOpenBatchSize(event, row) }
                                         : { icon: '', disable: true, onClick: (rowData) => { } }
                                 }
@@ -425,7 +425,7 @@ const TableView = (props: ITableViewProps) => {
                                         </Form.Group>
 
                                         <Form.Group as={Col} md="6">
-                                            <Form.Label>Product</Form.Label>
+                                            <Form.Label>Unit of Measure</Form.Label>
                                             <select value={selectedRoom.UOM ?? -1} className="form-control" name="UOM"
                                                 onChange={handleSelectUOM}>
                                                 <option value="">--Select--</option>
