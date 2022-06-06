@@ -51,12 +51,12 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
 
     useEffect(() => {
         if (props.loggedInUser.RoleId == -1) {
-            
+
             const interval = setInterval(() => {
                 dispatch(fetchRoomByDeviceIP())
                 console.log('This will be called every 5 seconds');
             }, 10000);
-            
+
             return () => clearInterval(interval);
         }
     }, [])
@@ -124,6 +124,14 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
         }
     }, [connection]);
 
+    const completeBatch = async () => {
+        if (canChangStatusProduction) {
+            await Promise.all([
+                props.changeRoomStatus(room.RoomId, room.BatchId, room.BatchSize, room.UOM, -1, props.loggedInUser.Id)
+            ]).then(async () => { if (connection) await connection.send("SendMessage", "RoomStatusChanged") });
+        }
+    }
+
     const changeStatus = async (log: RoomLog) => {
         if ((log.RoomStatus == 'No Activity' && canChangStatusNoActivity) ||
             (log.RoomStatus == 'Production' && canChangStatusProduction) ||
@@ -145,7 +153,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                     <div className="card-header-left width-40" >
                                         <img src={mylanLogod} alt="" width="50px" height="50px" />
                                         <span><h4>Mylan Laboratories Limited, Indore</h4></span>
-                                        
+
                                     </div>
 
                                     <div className="card-header-right p-3 width-60" style={{ 'cursor': 'pointer', 'display': 'flex', 'justifyContent': 'flex-end' }}>
@@ -229,9 +237,9 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.map((log: RoomLog) => {
-                                                            return <th 
-                                                            className={`${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : ""}`}
-                                                            style={{ 'fontSize': '22px', 'fontWeight': 'bold' }}>{log.RoomStatus}</th>
+                                                            return <th
+                                                                className={`${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : ""}`}
+                                                                style={{ 'fontSize': '22px', 'fontWeight': 'bold' }}>{log.RoomStatus}</th>
                                                         })
                                                     }
                                                 </tr>
@@ -241,9 +249,9 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.map((log: RoomLog) => {
-                                                            return <th 
-                                                            className={`${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : ""}`}
-                                                            style={{ 'fontWeight': 'bold', 'background': 'white' }} >
+                                                            return <th
+                                                                className={`${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : ""}`}
+                                                                style={{ 'fontWeight': 'bold', 'background': 'white' }} >
                                                                 Sign / Date
                                                             </th>
                                                         })
@@ -253,10 +261,10 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                     {
                                                         room.RoomLogs && room.RoomLogs.length > 0 &&
                                                         room.RoomLogs.map((log: RoomLog) => {
-                                                            return <th 
-                                                            className={`${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : ""}`}
-                                                            style={{ 'fontWeight': 'bold', 'background': 'white' }} >
-                                                               {
+                                                            return <th
+                                                                className={`${room.RoomCurrentStatus == log.RoomStatus ? "bg-c-green" : ""}`}
+                                                                style={{ 'fontWeight': 'bold', 'background': 'white' }} >
+                                                                {
                                                                     log.UserName ?
                                                                         <span>
                                                                             {
@@ -278,12 +286,12 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                         })
                                                     }
                                                 </tr>
-                                             
+
                                             </tbody>
                                         </Table>
                                     </Row>
                                 </Card.Body>
-                                <Card.Footer> 
+                                <Card.Footer>
                                     <Row className='p-10 font-bold' >
                                         <Col xs={4} sm={4} className="text-left" >Reference:{room.ReferenceNumber}</Col>
                                         <Col xs={4} sm={4} className="text-center">Form:{room.FormNumber}</Col>
@@ -307,7 +315,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                                 return <Col key={log.RoomStatusId} xs={12} sm={3}>
                                                                     {
                                                                         ((log.RoomStatus == 'No Activity' && canChangStatusNoActivity) ||
-                                                                         (log.RoomStatus == 'Production' && canChangStatusProduction) ||
+                                                                            (log.RoomStatus == 'Production' && canChangStatusProduction) ||
                                                                             (log.RoomStatus == 'Cleaning' && canChangStatusCleaning) ||
                                                                             (log.RoomStatus == 'Maintenance' && canChangStatusMaintainance)) ?
                                                                             <Card onClick={() => changeStatus(log)} style={{ 'cursor': 'pointer' }}>
@@ -334,11 +342,34 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
                                                                                 </Card.Footer>
                                                                             </Card>
                                                                             : null
-
                                                                     }
+
 
                                                                 </Col>
                                                             })}
+                                                        <Col>
+                                                            {
+                                                                canChangStatusProduction && room.BatchId > 0 ?
+                                                                    <Card onClick={() => completeBatch()} style={{ 'cursor': 'pointer' }}>
+                                                                        <Card.Footer
+                                                                            className={`
+                                                                                        ${room.BatchId > 0 ? "bg-c-yellow" : "bg-c-green"
+
+                                                                                }`}
+
+                                                                        >
+                                                                            <Row className="row align-items-center">
+                                                                                <Col>
+                                                                                    <h6 className="text-white m-b-0">Remove Batch</h6>
+                                                                                </Col>
+                                                                            </Row>
+                                                                        </Card.Footer>
+                                                                    </Card>
+                                                                    : null
+
+                                                            }
+                                                        </Col>
+
                                                     </Row>
                                                 </Card.Body>
 

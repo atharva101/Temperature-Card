@@ -249,6 +249,12 @@ END
 GO
 /****** Object:  StoredProcedure [dbo].[sprocChangeRoomStatus]    Script Date: 6/4/2022 5:28:44 PM ******/
 GO
+/****** Object:  StoredProcedure [dbo].[sprocChangeRoomStatus]    Script Date: 6/6/2022 5:02:52 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
 ALTER Procedure [dbo].[sprocChangeRoomStatus]
 @RoomId INT,
 @BatchId INT,
@@ -264,19 +270,25 @@ DECLARE @UOMId INT
 
 SELECT TOP 1 @UOMId = Id FROM mylan_UnitOfMeasure WHERE [Description] = @UOM
 
+-- This code is for Batch Completed in that case StatusID will be -1 
+IF @StatusId = -1 
+BEGIN
+	SELECT @StatusId = Id FROM StatusWorkFlow WHERE [Order] = 1 
+
+	UPDATE dbo.RoomLog
+	SET 
+	StatusId = @StatusId,
+	[TimeStamp] = NULL,
+	UserId = NULL,
+	BatchId = NULL,
+	[BatchSize] = NULL,
+	[UOM] = NULL
+	WHERE RoomId = @RoomId 
+	RETURN 
+END
+
 IF (@BatchId <= 0) 
 SET @BatchId = NULL
-
---IF (@BatchId = -1 )
---BEGIN
---DECLARE @NoActivityStatus INT
---SELECT TOP 1 @NoActivityStatus = Id FROM StatusWorkFlow WHERE StatusWorkFlow.[Order] = 1
-
---SELECT TOP 1 @BatchId = BatchId , @BatchSize = [BatchSize] , @UOMId = UOM
---FROM RoomLog
---WHERE RoomId = @RoomId AND StatusId = @NoActivityStatus
---ORDER BY Id desc
---END
 
 select TOP 1 @RoomCurrentStatusId = StatusId  FROM RoomLog WHERE RoomId = @RoomId ORDER BY Id DESC;
 
@@ -304,6 +316,7 @@ AND ISNULL(BatchId, 0) < 1
 --WHERE @StatusId <> @RoomCurrentStatusId
 
 END
+
 GO
 /****** Object:  StoredProcedure [dbo].[sprocAddEditMaster]    Script Date: 6/4/2022 5:22:39 PM ******/
 SET ANSI_NULLS ON
