@@ -5,7 +5,6 @@ import { IRoom, RoomLog } from '../../../models/room';
 import { RootState } from '../../../store/action-types';
 import { RoomState, changeRoomStatus, fetchAllRooms, selectRoom, fetchRoomByDeviceIP } from '../../../store/rooms/room.action';
 import { connect, useDispatch } from 'react-redux';
-import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { IPermission } from '../../../models/role';
 import mylanLogod from '../../../assets/images/mylan.png';
 
@@ -24,7 +23,6 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
     const [status, setStatus] = useState('');
 
     const [currentWorkflowState, setCurrentWorkflowState] = useState({} as RoomLog);
-    const [connection, setConnection] = useState<null | HubConnection>(null);
 
     const [canAssignBatchToRoom, setCanAssignBatchToRoom] = useState(false);
     const [canChangeBatchStatus, setCanChangeBatchStatus] = useState(false);
@@ -99,36 +97,36 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
         }
     }, [room]);
 
-    useEffect(() => {
-        const connect = new HubConnectionBuilder()
-            .withUrl("/signalServer")
-            .withAutomaticReconnect()
-            .build();
+    // useEffect(() => {
+    //     const connect = new HubConnectionBuilder()
+    //         .withUrl("/signalServer")
+    //         .withAutomaticReconnect()
+    //         .build();
 
-        setConnection(connect);
-    }, []);
+    //     setConnection(connect);
+    // }, []);
 
-    useEffect(() => {
-        if (connection) {
-            connection
-                .start()
-                .then(() => {
-                    connection.on("ReceiveMessage", (message: any) => {
-                        //TODO FetchData
-                        props.fetchAllRooms();
-                    });
-                })
-                .catch((error: Error) => {
+    // useEffect(() => {
+    //     if (connection) {
+    //         connection
+    //             .start()
+    //             .then(() => {
+    //                 connection.on("ReceiveMessage", (message: any) => {
+    //                     //TODO FetchData
+    //                     props.fetchAllRooms();
+    //                 });
+    //             })
+    //             .catch((error: Error) => {
 
-                });
-        }
-    }, [connection]);
+    //             });
+    //     }
+    // }, [connection]);
 
     const completeBatch = async () => {
         if (canChangStatusProduction) {
             await Promise.all([
                 props.changeRoomStatus(room.RoomId, room.BatchId, room.BatchSize, room.UOM, -1, props.loggedInUser.Id)
-            ]).then(async () => { if (connection) await connection.send("SendMessage", "RoomStatusChanged") });
+            ]).then(async () => { await props.fetchAllRooms() });
         }
     }
 
@@ -139,7 +137,7 @@ const RoomDashboard = (props: IRoomDashboardProps) => {
             (log.RoomStatus == 'Maintenance' && canChangStatusMaintainance)) {
             await Promise.all([
                 props.changeRoomStatus(room.RoomId, room.BatchId, room.BatchSize, room.UOM, log.RoomStatusId, props.loggedInUser.Id)
-            ]).then(async () => { if (connection) await connection.send("SendMessage", "RoomStatusChanged") });
+            ]).then(async () => { await props.fetchAllRooms() });
         }
     }
     return (<>
