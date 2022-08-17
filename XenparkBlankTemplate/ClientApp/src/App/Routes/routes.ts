@@ -11,6 +11,8 @@ import MaintainRoomMaster from '../Pages/Master/RoomMaster/MaintainRoomMaster';
 import RoomMaster from '../Pages/Master/RoomMaster/RoomMaster';
 import MaintainUOMMaster from '../Pages/Master/UOMMaster/MaintainUOMMaster';
 import UOMMaster from '../Pages/Master/UOMMaster/UOMMaster';
+import TempratureDashboard from '../Pages/TemperatureDashboard';
+
 const Dashboard = React.lazy(() => import('../Pages/Dashboard'));
 const RoomList = React.lazy(() => import('../Pages/RoomList/RoomList'));
 const RoomDashboard = React.lazy(() => import('../Pages/RoomList/RoomDashboard'));
@@ -58,6 +60,8 @@ const routes = [
 
     { path: '/role', exact: true, name: 'Analytics', component: Role },
     { path: '/maintain-role', exact: true, name: 'Add Edit room', component: MaintainRole },
-
+    
+    { path: '/temperatureDashboard', exact: true, name: 'Analytics', component: TempratureDashboard },
+    
 ];
 export default routes;
